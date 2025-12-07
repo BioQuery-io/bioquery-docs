@@ -1,0 +1,374 @@
+# Query Card Schema
+
+Query Cards are the core data structure in BioQuery. Every query you run produces a Query Card that captures the full context: the original question, parsed interpretation, data sources, statistical methods, results, and visualizations.
+
+import { Callout } from 'nextra/components'
+
+## Overview
+
+A Query Card is designed for:
+- **Reproducibility**: Contains everything needed to recreate the analysis
+- **Shareability**: Unique URLs for each card
+- **Transparency**: Full visibility into methods and data sources
+- **Extensibility**: Schema supports future analysis types
+
+## Complete Schema
+
+### QueryCard
+
+The top-level object returned by the API.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (format: `bq-YYYY-MM-DD-xxxxx`) |
+| `version` | string | Schema version (currently `"1.0"`) |
+| `created_at` | datetime | When the card was created |
+| `created_by` | string | User who created the card |
+| `parent_id` | string? | ID of parent card if this is a fork |
+| `query` | Query | The user's query and its interpretation |
+| `data_source` | DataSource | Information about data used |
+| `cohort` | Cohort | Sample/cohort statistics |
+| `analysis` | Analysis | Statistical methods used |
+| `result` | Result | Analysis results |
+| `figure` | Figure? | Visualization data |
+| `citations` | Citations? | Auto-generated citations |
+| `reproducibility` | Reproducibility? | Full reproduction details |
+| `metadata` | Metadata? | Additional metadata |
+| `analysis_params` | object? | User-specified analysis parameters |
+| `input_cohort` | CohortFilter? | User's filter criteria for cohort builder |
+
+---
+
+### Query
+
+Contains the original query and its parsed interpretation.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `natural_language` | string | The original user query |
+| `parsed` | ParsedQuery | Structured interpretation |
+
+---
+
+### ParsedQuery
+
+The structured interpretation of the user's query.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data_type` | string | Data type: `expression`, `mutation`, `cnv`, `unclear` |
+| `analysis_type` | string | Analysis type: `differential_expression`, `mutation_frequency`, `survival_analysis`, `pan_cancer_expression`, `correlation`, `unclear` |
+| `gene` | string | Primary gene of interest |
+| `gene_id` | string? | Ensembl gene ID |
+| `genes` | string[]? | Multiple genes (for correlation queries) |
+| `cancer_type` | string? | Single cancer type |
+| `cancer_types` | string[] | List of cancer types |
+| `group_a_label` | string? | Label for comparison group A |
+| `group_b_label` | string? | Label for comparison group B |
+| `expression_metric` | string | `median` or `mean` |
+| `survival_endpoint` | string | `OS`, `PFS`, or `DFS` |
+| `needs_clarification` | boolean | Whether clarification is needed |
+| `clarification_message` | string | Message asking for clarification |
+| `confidence` | float | Confidence in interpretation (0-1) |
+| `assumptions_made` | string | Any assumptions made during parsing |
+| `original_intent` | QueryIntent? | Raw intent extraction (debugging) |
+
+#### Future-Proofing Fields
+
+<Callout type="info">
+These fields are reserved for upcoming features and may be empty in current responses.
+</Callout>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `variant` | string? | Specific mutation variant (e.g., `"TP53 R175H"`, `"BRAF V600E"`) |
+| `variant_type` | string? | Variant type: `missense`, `nonsense`, `frameshift`, etc. |
+| `transcript_id` | string? | Ensembl transcript ID (e.g., `"ENST00000269305"`) |
+| `isoform_name` | string? | Isoform name (e.g., `"DDR1-201"`) |
+| `cell_types` | string[]? | Cell types for single-cell analysis |
+| `dataset_id` | string? | Single-cell dataset reference |
+| `signature_name` | string? | Gene signature name (e.g., `"MYC_TARGETS_V1"`) |
+| `signature_genes` | string[]? | Genes in a multi-gene signature |
+
+---
+
+### DataSource
+
+Information about the data source used for the analysis.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Data source name (e.g., `"TCGA"`) |
+| `release` | string | Release version (e.g., `"GDC Release 39"`) |
+| `accessed_at` | datetime | When data was accessed |
+| `genome_build` | string | Reference genome (e.g., `"hg38"`) |
+| `expression_type` | string? | Expression data type |
+| `expression_normalization` | string? | Normalization method |
+| `mutation_caller` | string? | Mutation calling pipeline |
+| `bigquery_tables` | string[] | Exact BigQuery tables used |
+| `bigquery_project` | string | BigQuery project ID |
+
+#### Future-Proofing Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data_version` | string? | Data version for reproducibility (e.g., `"GDC-39.0"`) |
+| `data_checksum` | string? | Hash to detect if underlying data changed |
+| `single_cell_source` | string? | Single-cell data source: `"TISCH"`, `"CELLxGENE"`, `"GEO"` |
+| `single_cell_dataset_id` | string? | Dataset identifier in the source |
+| `cell_annotation_source` | string? | Cell type annotation source |
+
+---
+
+### Cohort
+
+Sample and cohort information.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total_n` | integer | Total number of samples |
+| `group_a` | GroupStats? | Statistics for group A |
+| `group_b` | GroupStats? | Statistics for group B |
+| `groups` | GroupStats[]? | Statistics for multiple groups |
+
+### GroupStats
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Group name |
+| `n` | integer | Sample count |
+| `cancer_type` | string? | Cancer type |
+| `sample_type` | string? | Sample type (e.g., `"Primary Tumor"`) |
+| `filters_applied` | string[]? | Filters applied to this group |
+
+---
+
+### CohortFilter
+
+User-defined cohort filter criteria for custom analyses.
+
+<Callout type="info">
+This schema supports the upcoming cohort builder feature.
+</Callout>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `cancer_types` | string[]? | Filter by cancer types |
+| `stages` | string[]? | Filter by stages (e.g., `["Stage I", "Stage II"]`) |
+| `grades` | string[]? | Filter by grades (e.g., `["G1", "G2"]`) |
+| `mutation_status` | object? | Filter by mutation status (e.g., `{"TP53": true, "KRAS": false}`) |
+| `age_range` | [int, int]? | Filter by age range `[min, max]` |
+| `sex` | string? | Filter by sex: `"male"`, `"female"`, `"all"` |
+| `sample_types` | string[]? | Filter by sample types |
+| `custom_sql_filter` | string? | Advanced: raw SQL WHERE clause |
+
+---
+
+### Analysis
+
+Statistical analysis details.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `method` | string | Statistical method (e.g., `"wilcoxon_rank_sum"`, `"log_rank"`) |
+| `method_full_name` | string? | Full method name |
+| `parameters` | object? | Method-specific parameters |
+| `multiple_testing_correction` | string | Correction method: `"none"`, `"bonferroni"`, `"fdr_bh"` |
+| `confidence_level` | float | Confidence level (default: 0.95) |
+| `stratification_method` | string? | Expression stratification method |
+| `stratification_threshold` | float? | Actual threshold used |
+| `filters` | string[]? | SQL filters applied |
+| `software_versions` | object? | Software versions for reproducibility |
+
+---
+
+### Result
+
+Analysis results.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `summary` | string | Natural language summary |
+| `significant` | boolean | Whether result is statistically significant |
+| `p_value` | float? | P-value |
+| `p_value_adjusted` | float? | Adjusted p-value |
+| `effect_size` | float? | Effect size |
+| `effect_size_type` | string? | Type of effect size |
+| `confidence_interval` | [float, float]? | Confidence interval |
+| `group_a_stats` | GroupResultStats? | Statistics for group A |
+| `group_b_stats` | GroupResultStats? | Statistics for group B |
+| `pan_cancer_results` | object[]? | Results for pan-cancer analysis |
+| `survival_stats` | SurvivalStats? | Survival-specific statistics |
+
+### GroupResultStats
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `mean` | float? | Mean value |
+| `median` | float? | Median value |
+| `std` | float? | Standard deviation |
+| `ci_lower` | float? | Lower confidence interval |
+| `ci_upper` | float? | Upper confidence interval |
+| `n` | integer? | Sample count |
+| `frequency` | float? | Frequency (for mutations) |
+| `count` | integer? | Count (for mutations) |
+
+### SurvivalStats
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `median_survival_group_a` | float? | Median survival for high expression |
+| `median_survival_group_b` | float? | Median survival for low expression |
+| `hazard_ratio` | float? | Hazard ratio |
+| `hr_ci_lower` | float? | HR lower confidence interval |
+| `hr_ci_upper` | float? | HR upper confidence interval |
+| `log_rank_p` | float? | Log-rank p-value |
+
+---
+
+### Figure
+
+Visualization information.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | Figure type: `boxplot`, `kaplan_meier`, `bar`, `scatter`, `heatmap` |
+| `url` | string? | URL to rendered figure |
+| `plotly_json` | object? | Plotly.js figure specification |
+| `alt_text` | string? | Alt text for accessibility |
+
+---
+
+### Reproducibility
+
+Everything needed to reproduce the analysis.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `sql_query` | string | Exact SQL query executed |
+| `bioquery_version` | string | BioQuery version |
+| `python_version` | string? | Python version |
+| `package_versions` | object? | Package versions |
+| `bigquery_project` | string | BigQuery project |
+| `bigquery_tables` | string[] | Tables used |
+| `data_accessed_at` | datetime | When data was accessed |
+| `reproduction_steps` | string[]? | Step-by-step instructions |
+| `python_code` | string? | Python code snippet |
+| `r_code` | string? | R code snippet |
+
+---
+
+### Citations
+
+Auto-generated citations.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `in_text` | string? | In-text citation |
+| `methods` | string? | Methods section text |
+| `bibtex` | string? | BibTeX citation |
+
+---
+
+### Metadata
+
+Additional card metadata.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_time_ms` | integer? | Query execution time |
+| `permalink` | string? | Permanent URL |
+| `is_public` | boolean | Whether card is public |
+| `fork_count` | integer | Number of forks |
+| `view_count` | integer | Number of views |
+| `export_formats` | string[] | Available export formats |
+
+---
+
+## Example Query Card
+
+```json
+{
+  "id": "bq-2025-12-07-a7f3x",
+  "version": "1.0",
+  "created_at": "2025-12-07T12:00:00Z",
+  "created_by": "anonymous",
+  "query": {
+    "natural_language": "Is DDR1 expression higher in papillary RCC compared to clear cell RCC?",
+    "parsed": {
+      "data_type": "expression",
+      "analysis_type": "differential_expression",
+      "gene": "DDR1",
+      "cancer_types": ["KIRP", "KIRC"],
+      "group_a_label": "KIRP",
+      "group_b_label": "KIRC",
+      "expression_metric": "median",
+      "confidence": 1.0
+    }
+  },
+  "data_source": {
+    "name": "TCGA",
+    "release": "GDC Release 39",
+    "accessed_at": "2025-12-07T12:00:00Z",
+    "genome_build": "hg38",
+    "expression_type": "RNA-seq TPM (STAR-RSEM)",
+    "expression_normalization": "TPM (transcripts per million)",
+    "bigquery_tables": ["isb-cgc-bq.TCGA.RNAseq_hg38_gdc_current"],
+    "bigquery_project": "isb-cgc-bq"
+  },
+  "cohort": {
+    "total_n": 828,
+    "group_a": {
+      "name": "KIRP",
+      "n": 290,
+      "cancer_type": "KIRP",
+      "sample_type": "Primary Tumor"
+    },
+    "group_b": {
+      "name": "KIRC",
+      "n": 538,
+      "cancer_type": "KIRC",
+      "sample_type": "Primary Tumor"
+    }
+  },
+  "analysis": {
+    "method": "wilcoxon_rank_sum",
+    "method_full_name": "Wilcoxon rank-sum test (Mann-Whitney U)",
+    "multiple_testing_correction": "none",
+    "confidence_level": 0.95
+  },
+  "result": {
+    "summary": "DDR1 expression is significantly higher in papillary RCC (KIRP) compared to clear cell RCC (KIRC), with a median fold change of 2.3 (p < 0.001).",
+    "significant": true,
+    "p_value": 2.3e-12,
+    "effect_size": 0.85,
+    "effect_size_type": "rank_biserial",
+    "group_a_stats": {
+      "median": 8.7,
+      "mean": 8.9,
+      "std": 1.2,
+      "n": 290
+    },
+    "group_b_stats": {
+      "median": 6.4,
+      "mean": 6.5,
+      "std": 1.5,
+      "n": 538
+    }
+  },
+  "figure": {
+    "type": "boxplot",
+    "plotly_json": { ... },
+    "alt_text": "Box plot showing DDR1 expression in KIRP vs KIRC"
+  }
+}
+```
+
+## Schema Versioning
+
+The Query Card schema uses semantic versioning. The current version is `1.0`.
+
+- **Major version** (1.x): Breaking changes
+- **Minor version** (x.1): New optional fields (backward compatible)
+
+All new fields added are optional with defaults, ensuring backward compatibility with existing cards.

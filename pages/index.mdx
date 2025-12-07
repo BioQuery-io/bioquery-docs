@@ -1,0 +1,58 @@
+# Welcome to BioQuery
+
+BioQuery lets you ask questions about cancer genomics in plain English and get **publication-ready answers** with interactive figures, statistical analysis, and reproducible methods.
+
+## What is BioQuery?
+
+BioQuery is a natural language interface for exploring cancer genomics data from:
+
+- **TCGA** - The Cancer Genome Atlas (33 cancer types, 11,000+ patients)
+- **GTEx** - Genotype-Tissue Expression (normal tissue reference)
+
+Ask questions like:
+
+- "Is DDR1 expression higher in papillary RCC vs clear cell RCC?"
+- "Does high TP53 expression predict worse survival in lung cancer?"
+- "What's the BRAF mutation rate in melanoma?"
+
+## Key Features
+
+### Query Cards
+
+Every query generates a **Query Card** - a reproducible, shareable analysis unit containing:
+
+- Natural language question and interpretation
+- Interactive Plotly figures
+- Statistical results (p-values, effect sizes, confidence intervals)
+- SQL query (for transparency)
+- Grant-ready methods text
+- Export options (PNG, SVG, JSON)
+
+### Analysis Types
+
+| Analysis | Description | Example |
+|----------|-------------|---------|
+| **Differential Expression** | Compare gene expression between cancer types | "Is EGFR higher in LUAD vs LUSC?" |
+| **Tumor vs Normal** | Compare tumor to normal tissue | "Is MYC upregulated in breast cancer?" |
+| **Mutation Frequency** | Calculate mutation rates | "What % of GBM has IDH1 mutations?" |
+| **Survival Analysis** | Kaplan-Meier curves | "Does high DDR1 predict worse survival?" |
+
+## Quick Start
+
+1. **Go to [bioquery.io/query](https://bioquery.io/query)**
+2. **Type a question** in plain English
+3. **Get your results** - interactive figure + statistics
+4. **Export** - Download PNG/SVG for publications
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  BioQuery is currently in beta. Create a free account to get 2 queries per day, or [contact us](mailto:hello@bioquery.io) for expanded access.
+</Callout>
+
+## Next Steps
+
+- [Quick Start Guide](/getting-started/quickstart) - Run your first query
+- [Understanding Results](/guides/understanding-results) - Interpret your Query Card
+- [API Reference](/api) - Programmatic access
+- [Examples](/examples) - Sample queries by analysis type

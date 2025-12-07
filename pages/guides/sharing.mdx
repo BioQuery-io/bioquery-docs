@@ -1,0 +1,118 @@
+# Sharing & Collaboration
+
+Share your Query Cards with collaborators, include them in grant applications, and build a research portfolio.
+
+## Permalinks
+
+Every Query Card has a unique, permanent URL that you can share.
+
+### Creating a Permalink
+
+1. Click the **Share** button on your Query Card
+2. Click **Copy Link**
+3. Share the URL with anyone
+
+### Permalink Format
+
+```
+https://bioquery.io/card/abc123xyz
+```
+
+### What Viewers See
+
+Anyone with the link can:
+- View the complete Query Card
+- See the interactive figure
+- Read the statistical results
+- Copy the methods text
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  Permalinks are permanent. Once created, they won't expire or change.
+</Callout>
+
+## Sharing Scenarios
+
+### With Collaborators
+
+Share Query Card links directly:
+- Email the permalink
+- Post in Slack/Teams
+- Add to shared documents
+
+Collaborators can view without signing in.
+
+### In Grant Applications
+
+Include BioQuery figures and methods:
+
+1. Export figure as PNG or SVG
+2. Copy the Methods text
+3. Include the permalink for reviewers to explore interactively
+
+**Example grant text:**
+> Preliminary data shows DDR1 is significantly upregulated in papillary RCC (Figure 1, p < 0.001). Interactive visualization available at: bioquery.io/card/abc123
+
+### In Publications
+
+For peer-reviewed papers:
+
+1. Use SVG export for publication-quality figures
+2. Include the full Methods text
+3. Reference the permalink in supplementary materials
+
+### In Presentations
+
+For talks and posters:
+
+1. Embed PNG in your slides
+2. Include QR code linking to the Query Card
+3. Audience can explore the data interactively
+
+## Building a Research Portfolio
+
+### Query History
+
+Access your past queries from your profile:
+1. Click your profile icon
+2. Select **Query History**
+3. Browse, search, and filter past queries
+
+### Organizing Queries
+
+Tips for managing multiple queries:
+- Use consistent naming in your questions
+- Export JSON for local backup
+- Keep permalinks in a research log
+
+## Privacy & Visibility
+
+### Who Can View?
+
+| Viewer Type | Can View Shared Cards | Can View Your History |
+|-------------|----------------------|----------------------|
+| Anyone with link | ✅ | ❌ |
+| You (logged in) | ✅ | ✅ |
+| Other users | ✅ (with link) | ❌ |
+
+<Callout type="warning">
+  Anyone with a permalink can view that specific Query Card. Don't share links to unpublished research publicly.
+</Callout>
+
+### Data Privacy
+
+- Query Cards contain only aggregated results, not patient-level data
+- TCGA data is de-identified and publicly available
+- Your queries are private until you share the permalink
+
+## Embedding (Coming Soon)
+
+Future feature: Embed interactive Query Cards directly in websites and notebooks.
+
+```html
+<!-- Coming soon -->
+<iframe src="https://bioquery.io/embed/abc123" />
+```
+
+Stay tuned for updates on embedding capabilities.

@@ -1,0 +1,109 @@
+# API Overview
+
+The BioQuery API allows you to run queries programmatically and integrate cancer genomics analysis into your workflows.
+
+import { Callout } from 'nextra/components'
+
+<Callout type="warning">
+  The API is currently in beta and available only to users with Researcher access. [Contact us](mailto:hello@bioquery.io) to request access.
+</Callout>
+
+## Base URL
+
+```
+https://api.bioquery.io/v1
+```
+
+## Quick Start
+
+### 1. Get an API Key
+
+1. Sign in to [bioquery.io](https://bioquery.io)
+2. Go to **Settings** → **API Keys**
+3. Click **Generate New Key**
+4. Copy and store your key securely
+
+### 2. Make Your First Request
+
+```bash
+curl -X POST https://api.bioquery.io/v1/query \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Is DDR1 higher in KIRP vs KIRC?"}'
+```
+
+### 3. Get Your Results
+
+```json
+{
+  "id": "card_abc123",
+  "status": "completed",
+  "query": {
+    "original": "Is DDR1 higher in KIRP vs KIRC?",
+    "parsed": {
+      "gene": "DDR1",
+      "cancer_types": ["KIRP", "KIRC"],
+      "analysis_type": "differential_expression"
+    }
+  },
+  "results": {
+    "answer": "DDR1 expression is significantly higher in papillary RCC (KIRP) compared to clear cell RCC (KIRC)...",
+    "statistics": {
+      "p_value": 0.00032,
+      "fold_change": 2.3
+    }
+  }
+}
+```
+
+## Key Concepts
+
+### Query Cards
+
+The API returns **Query Card** objects containing:
+- Natural language answer
+- Statistical results
+- Figure data (Plotly JSON)
+- Methods text
+- SQL query
+
+### Synchronous vs Asynchronous
+
+- **Simple queries**: Return results immediately (~5-10 seconds)
+- **Complex queries**: Return a `card_id` for polling
+
+### Rate Limits
+
+| Tier | Requests/Day | Concurrent |
+|------|-------------|------------|
+| Free | 2 | 1 |
+| Researcher | 100 | 5 |
+| Enterprise | Custom | Custom |
+
+## SDKs
+
+### Python
+
+```python
+pip install bioquery
+```
+
+```python
+from bioquery import BioQuery
+
+client = BioQuery(api_key="YOUR_API_KEY")
+result = client.query("Is DDR1 higher in KIRP vs KIRC?")
+
+print(result.answer)
+print(result.statistics)
+```
+
+### R (Coming Soon)
+
+An R package is in development. [Sign up](mailto:hello@bioquery.io) to be notified when it's available.
+
+## Next Steps
+
+- [Authentication](/api/authentication) - API key management
+- [Endpoints](/api/endpoints) - Complete endpoint reference
+- [Error Handling](/api/errors) - Error codes and troubleshooting

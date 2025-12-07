@@ -1,0 +1,154 @@
+# Expression Queries
+
+Examples of differential expression and tumor vs normal analyses.
+
+## Differential Expression
+
+Compare gene expression between two cancer types.
+
+### Basic Comparison
+
+```
+Is DDR1 expression higher in papillary RCC vs clear cell RCC?
+```
+
+**What you'll get:**
+- Boxplot comparing DDR1 expression in KIRP vs KIRC
+- P-value from Wilcoxon rank-sum test
+- Fold change between groups
+- Sample sizes for each cancer type
+
+### Using TCGA Codes
+
+```
+Compare EGFR expression between LUAD and LUSC
+```
+
+TCGA cancer type codes work directly:
+- LUAD = Lung adenocarcinoma
+- LUSC = Lung squamous cell carcinoma
+
+### Subtype Comparisons
+
+```
+How does HER2 expression differ between ER+ and ER- breast cancer?
+```
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  Subtype comparisons require that subtype annotations exist in TCGA clinical data.
+</Callout>
+
+### More Examples
+
+```
+Is KRAS expression higher in pancreatic cancer vs normal pancreas?
+Compare MYC levels between Burkitt lymphoma and DLBCL
+Is PTEN expression different in prostate cancer subtypes?
+What's the ALK expression in NSCLC vs SCLC?
+```
+
+---
+
+## Tumor vs Normal
+
+Compare gene expression in tumor tissue versus normal tissue.
+
+### Basic Tumor vs Normal
+
+```
+Is TP53 upregulated in breast cancer compared to normal?
+```
+
+**What you'll get:**
+- Grouped boxplot (Tumor vs Normal)
+- P-value for the comparison
+- Fold change (tumor / normal)
+- Sample sizes
+
+### Fold Change Queries
+
+```
+What's the fold change of BRCA1 in ovarian tumors vs normal?
+```
+
+Returns the specific fold change value prominently.
+
+### Overexpression Queries
+
+```
+Is MYC overexpressed in liver cancer?
+Is EGFR upregulated in glioblastoma?
+```
+
+These questions compare tumor samples to normal tissue.
+
+### Downregulation Queries
+
+```
+Is RB1 downregulated in small cell lung cancer?
+Is CDKN2A expression lower in melanoma vs normal skin?
+```
+
+<Callout type="info">
+  Normal tissue comes from TCGA matched normal samples when available, supplemented by GTEx data.
+</Callout>
+
+### More Examples
+
+```
+Is VEGFA upregulated in renal cell carcinoma?
+Compare BCL2 expression in lymphoma vs normal lymph nodes
+Is CDK4 overexpressed in liposarcoma?
+What's the difference in ERBB2 between HER2+ breast cancer and normal?
+```
+
+---
+
+## Multiple Gene Queries
+
+<Callout type="warning">
+  Currently, BioQuery supports one gene per query. Run separate queries for multiple genes.
+</Callout>
+
+To analyze multiple genes:
+
+1. Run individual queries for each gene
+2. Use the API for batch processing
+3. Export JSON for combined analysis
+
+---
+
+## Common Patterns
+
+### Research Question → BioQuery
+
+| Research Question | BioQuery Query |
+|------------------|----------------|
+| "Is gene X a biomarker for cancer Y?" | "Is [gene] upregulated in [cancer]?" |
+| "Does gene X differ between subtypes?" | "Compare [gene] between [subtype1] and [subtype2]" |
+| "Is gene X a therapeutic target?" | "Is [gene] overexpressed in [cancer] vs normal?" |
+
+### Cancer-Specific Queries
+
+**Breast Cancer:**
+```
+Is ESR1 higher in ER+ vs ER- breast cancer?
+Compare ERBB2 expression in HER2+ vs HER2- tumors
+Is PGR expression associated with ER status?
+```
+
+**Lung Cancer:**
+```
+Is EGFR expression different between LUAD and LUSC?
+Compare ALK expression in ALK+ vs ALK- NSCLC
+Is KRAS higher in smokers vs never-smokers?
+```
+
+**Colorectal Cancer:**
+```
+Is APC expression lower in colorectal tumors vs normal?
+Compare BRAF expression in MSI-H vs MSS tumors
+Is KRAS upregulated in colorectal adenocarcinoma?
+```

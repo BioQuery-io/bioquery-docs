@@ -1,0 +1,143 @@
+# Understanding Results
+
+Learn how to interpret your Query Card and use the results in your research.
+
+## Query Card Anatomy
+
+Every query generates a **Query Card** with these components:
+
+### 1. Natural Language Answer
+
+The top section provides a plain-English interpretation of the findings:
+
+> "DDR1 expression is significantly higher in papillary RCC (KIRP) compared to clear cell RCC (KIRC), with a 2.3-fold increase (p < 0.001)."
+
+This summary is designed to be:
+- Accessible to non-experts
+- Accurate and statistically grounded
+- Ready to share with collaborators
+
+### 2. Interactive Figure
+
+The visualization varies by analysis type:
+
+| Analysis Type | Figure Type |
+|--------------|-------------|
+| Differential Expression | Boxplot with individual points |
+| Tumor vs Normal | Grouped boxplot |
+| Mutation Frequency | Bar chart |
+| Survival Analysis | Kaplan-Meier curve |
+
+**Interactivity features:**
+- **Hover**: See exact values for data points
+- **Zoom**: Click and drag to zoom into regions
+- **Pan**: Shift+drag to move around
+- **Reset**: Double-click to reset view
+
+### 3. Statistical Results
+
+Key statistics are displayed prominently:
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  All p-values are two-sided unless otherwise noted.
+</Callout>
+
+**For expression comparisons:**
+- **P-value**: Statistical significance (typically Wilcoxon rank-sum test)
+- **Fold Change**: Magnitude of difference between groups
+- **Sample Sizes**: Number of patients in each group
+- **Effect Size**: Cohen's d or similar measure
+
+**For survival analysis:**
+- **Log-rank P-value**: Significance of survival difference
+- **Hazard Ratio**: Risk of event in high vs low expression group
+- **Median Survival**: Median time to event for each group
+
+### 4. Methods Text
+
+A grant-ready paragraph describing the analysis:
+
+> "Gene expression data were obtained from The Cancer Genome Atlas (TCGA). DDR1 mRNA expression (log2 TPM+1) was compared between papillary renal cell carcinoma (KIRP, n=290) and clear cell renal cell carcinoma (KIRC, n=533) using a Wilcoxon rank-sum test. All analyses were performed using BioQuery (bioquery.io)."
+
+Click **Copy Methods** to copy this text for your paper.
+
+### 5. SQL Query
+
+For transparency and reproducibility, the exact SQL query is available:
+
+```sql
+SELECT sample_id, cancer_type, gene_expression
+FROM tcga.expression
+WHERE gene_symbol = 'DDR1'
+  AND cancer_type IN ('KIRP', 'KIRC')
+```
+
+Click **View SQL** to see the full query.
+
+## Interpreting P-values
+
+<Callout type="warning">
+  P-values should be interpreted in context. A small p-value with small effect size may not be biologically meaningful.
+</Callout>
+
+| P-value | Interpretation |
+|---------|---------------|
+| p < 0.001 | Strong evidence against null hypothesis |
+| p < 0.01 | Moderate evidence |
+| p < 0.05 | Weak evidence (traditional threshold) |
+| p ≥ 0.05 | Insufficient evidence |
+
+**Consider also:**
+- Sample size (large N can yield small p-values for trivial effects)
+- Effect size (is the difference biologically meaningful?)
+- Multiple comparisons (if running many queries, adjust significance threshold)
+
+## Interpreting Effect Sizes
+
+### Fold Change
+
+For expression comparisons, fold change indicates magnitude:
+
+| Fold Change | Interpretation |
+|-------------|---------------|
+| > 4 | Very large difference |
+| 2-4 | Large difference |
+| 1.5-2 | Moderate difference |
+| 1-1.5 | Small difference |
+
+### Hazard Ratio
+
+For survival analysis:
+
+| Hazard Ratio | Interpretation |
+|--------------|---------------|
+| HR > 2 | Strong association with worse survival |
+| HR 1.5-2 | Moderate association |
+| HR 1-1.5 | Weak association |
+| HR = 1 | No association |
+| HR < 1 | Association with better survival |
+
+## Sample Size Considerations
+
+<Callout>
+  Results with small sample sizes (n < 20 per group) should be interpreted cautiously.
+</Callout>
+
+BioQuery displays sample sizes prominently. Consider:
+
+- **TCGA data is observational** - associations may not be causal
+- **Some cancer types have limited samples** - rare cancers may have n < 50
+- **Subgroup analyses** reduce effective sample size
+
+## Reproducibility
+
+Every Query Card includes:
+
+1. **Timestamp** - When the query was run
+2. **Data Version** - Which TCGA data release
+3. **SQL Query** - Exact database query
+4. **Statistical Methods** - Tests and parameters used
+
+This ensures your results can be reproduced and verified.

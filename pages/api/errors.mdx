@@ -1,0 +1,261 @@
+# Error Handling
+
+Understanding and handling errors from the BioQuery API.
+
+## Error Response Format
+
+All errors return a consistent JSON structure:
+
+```json
+{
+  "error": "error_code",
+  "message": "Human-readable description",
+  "details": { ... }
+}
+```
+
+## Error Codes
+
+### Authentication Errors
+
+#### unauthorized
+
+```json
+{
+  "error": "unauthorized",
+  "message": "Invalid or missing API key"
+}
+```
+
+**HTTP Status:** 401
+
+**Causes:**
+- Missing `Authorization` header
+- Invalid API key format
+- Revoked or expired key
+
+**Solution:** Check your API key and ensure it's correctly formatted in the Authorization header.
+
+---
+
+#### forbidden
+
+```json
+{
+  "error": "forbidden",
+  "message": "API access not enabled for this account"
+}
+```
+
+**HTTP Status:** 403
+
+**Cause:** Your account doesn't have API access.
+
+**Solution:** [Contact us](mailto:hello@bioquery.io) to request Researcher access.
+
+---
+
+### Query Errors
+
+#### invalid_query
+
+```json
+{
+  "error": "invalid_query",
+  "message": "Could not parse the query",
+  "details": {
+    "suggestion": "Try using specific gene symbols (e.g., TP53) and cancer type codes (e.g., BRCA)"
+  }
+}
+```
+
+**HTTP Status:** 400
+
+**Causes:**
+- Ambiguous or unclear question
+- Missing gene or cancer type
+- Unsupported query type
+
+**Solution:** Rephrase your query with specific gene symbols and cancer type codes.
+
+---
+
+#### unknown_gene
+
+```json
+{
+  "error": "unknown_gene",
+  "message": "Gene 'XYZ123' not found in database",
+  "details": {
+    "queried": "XYZ123",
+    "suggestions": ["XYZ1", "XYZ2"]
+  }
+}
+```
+
+**HTTP Status:** 400
+
+**Cause:** The gene symbol isn't in our database.
+
+**Solution:** Check spelling or use the [genes endpoint](/api/endpoints#list-genes) to search for valid symbols.
+
+---
+
+#### unknown_cancer_type
+
+```json
+{
+  "error": "unknown_cancer_type",
+  "message": "Cancer type 'lung' is ambiguous",
+  "details": {
+    "queried": "lung",
+    "suggestions": [
+      {"code": "LUAD", "name": "Lung adenocarcinoma"},
+      {"code": "LUSC", "name": "Lung squamous cell carcinoma"}
+    ]
+  }
+}
+```
+
+**HTTP Status:** 400
+
+**Cause:** The cancer type is ambiguous or not recognized.
+
+**Solution:** Use a specific TCGA cancer type code.
+
+---
+
+#### no_data
+
+```json
+{
+  "error": "no_data",
+  "message": "No expression data available for DDR1 in CHOL",
+  "details": {
+    "gene": "DDR1",
+    "cancer_type": "CHOL",
+    "sample_count": 0
+  }
+}
+```
+
+**HTTP Status:** 404
+
+**Cause:** The requested combination of gene and cancer type has no data.
+
+**Solution:** Try a different cancer type or verify the gene is expressed in that tissue.
+
+---
+
+### Rate Limiting
+
+#### rate_limited
+
+```json
+{
+  "error": "rate_limited",
+  "message": "Rate limit exceeded",
+  "details": {
+    "limit": 100,
+    "remaining": 0,
+    "reset_at": "2024-01-15T11:00:00Z"
+  }
+}
+```
+
+**HTTP Status:** 429
+
+**Cause:** You've exceeded your rate limit.
+
+**Solution:** Wait until the reset time, or [contact us](mailto:hello@bioquery.io) for higher limits.
+
+**Headers included:**
+- `X-RateLimit-Limit`: Your daily limit
+- `X-RateLimit-Remaining`: Requests remaining
+- `X-RateLimit-Reset`: Unix timestamp of reset
+
+---
+
+### Server Errors
+
+#### internal_error
+
+```json
+{
+  "error": "internal_error",
+  "message": "An unexpected error occurred",
+  "details": {
+    "request_id": "req_abc123"
+  }
+}
+```
+
+**HTTP Status:** 500
+
+**Cause:** Something went wrong on our end.
+
+**Solution:** Retry the request. If it persists, contact support with the `request_id`.
+
+---
+
+## Handling Errors in Code
+
+### Python
+
+```python
+from bioquery import BioQuery, BioQueryError, RateLimitError
+
+client = BioQuery(api_key="YOUR_API_KEY")
+
+try:
+    result = client.query("Is DDR1 higher in KIRP vs KIRC?")
+except RateLimitError as e:
+    print(f"Rate limited. Reset at: {e.reset_at}")
+except BioQueryError as e:
+    print(f"Error: {e.message}")
+    if e.details:
+        print(f"Details: {e.details}")
+```
+
+### JavaScript
+
+```javascript
+const BioQuery = require('bioquery');
+
+const client = new BioQuery({ apiKey: 'YOUR_API_KEY' });
+
+try {
+  const result = await client.query('Is DDR1 higher in KIRP vs KIRC?');
+} catch (error) {
+  if (error.code === 'rate_limited') {
+    console.log(`Rate limited until ${error.details.reset_at}`);
+  } else {
+    console.error(`Error: ${error.message}`);
+  }
+}
+```
+
+## Retry Strategy
+
+For transient errors (500, 502, 503, 504), implement exponential backoff:
+
+```python
+import time
+import random
+
+def query_with_retry(client, query, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            return client.query(query)
+        except InternalError:
+            if attempt == max_retries - 1:
+                raise
+            wait = (2 ** attempt) + random.random()
+            time.sleep(wait)
+```
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  Always include the `request_id` from error responses when contacting support. This helps us debug issues quickly.
+</Callout>

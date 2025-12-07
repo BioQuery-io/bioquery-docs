@@ -1,0 +1,142 @@
+# Exporting Results
+
+Export your Query Cards in multiple formats for presentations, publications, and data analysis.
+
+## Export Formats
+
+### PNG (Recommended for Presentations)
+
+High-resolution raster image suitable for:
+- PowerPoint/Keynote presentations
+- Posters
+- Quick sharing
+
+**Specifications:**
+- Resolution: 300 DPI (publication quality)
+- Format: PNG with transparency
+- Size: Optimized for typical slide dimensions
+
+### SVG (Recommended for Publications)
+
+Vector format for professional publications:
+- Infinitely scalable
+- Editable in Illustrator/Inkscape
+- Required by many journals
+
+**Best for:**
+- Journal figures
+- Editing and customization
+- High-quality print
+
+### JSON (Recommended for Developers)
+
+Complete Query Card data in JSON format:
+- Full statistical results
+- Raw data points
+- Query metadata
+- Reproducibility information
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  JSON export includes all data needed to recreate the analysis programmatically.
+</Callout>
+
+## How to Export
+
+1. Click the **Export** button on your Query Card
+2. Select your desired format (PNG, SVG, or JSON)
+3. The file will download automatically
+
+## Export Contents
+
+### Figure Export (PNG/SVG)
+
+The exported figure includes:
+- Main visualization (boxplot, bar chart, or Kaplan-Meier curve)
+- Axis labels and title
+- Statistical annotations (p-value, sample sizes)
+- Legend (if applicable)
+
+### JSON Export Structure
+
+```json
+{
+  "id": "card_abc123",
+  "created_at": "2024-01-15T10:30:00Z",
+  "query": {
+    "original": "Is DDR1 higher in KIRP vs KIRC?",
+    "parsed": {
+      "gene": "DDR1",
+      "cancer_types": ["KIRP", "KIRC"],
+      "analysis_type": "differential_expression"
+    },
+    "sql": "SELECT ..."
+  },
+  "results": {
+    "answer": "DDR1 expression is significantly higher...",
+    "statistics": {
+      "p_value": 0.00032,
+      "fold_change": 2.3,
+      "effect_size": 0.85
+    },
+    "sample_sizes": {
+      "KIRP": 290,
+      "KIRC": 533
+    }
+  },
+  "figure": {
+    "type": "boxplot",
+    "data": { ... }
+  },
+  "methods": "Gene expression data were obtained from..."
+}
+```
+
+## Using Exports
+
+### In Publications
+
+1. Export as SVG
+2. Open in Adobe Illustrator or Inkscape
+3. Adjust fonts, colors, or labels as needed
+4. Export as PDF or EPS per journal requirements
+
+<Callout type="warning">
+  When modifying figures, ensure changes don't misrepresent the data. Always include original statistical values.
+</Callout>
+
+### In Presentations
+
+1. Export as PNG
+2. Insert directly into PowerPoint/Keynote
+3. Resize as needed (PNG is high resolution)
+
+### For Further Analysis
+
+1. Export as JSON
+2. Load in Python/R for additional analysis
+3. Use raw data for custom visualizations
+
+**Python example:**
+```python
+import json
+
+with open('query_card.json') as f:
+    card = json.load(f)
+
+# Access statistics
+p_value = card['results']['statistics']['p_value']
+fold_change = card['results']['statistics']['fold_change']
+
+# Access raw data for custom plotting
+data = card['figure']['data']
+```
+
+## Citation
+
+When using BioQuery results in publications, please cite:
+
+> Analysis performed using BioQuery (https://bioquery.io). Data from The Cancer Genome Atlas (TCGA) and Genotype-Tissue Expression (GTEx) projects.
+
+The **Methods** section of each Query Card provides grant-ready text you can use directly.

@@ -1,0 +1,264 @@
+# API Endpoints
+
+Complete reference for all BioQuery API endpoints.
+
+## Query Endpoints
+
+### Create Query
+
+Run a new query and get results.
+
+```
+POST /v1/query
+```
+
+#### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `query` | string | Yes | Natural language query |
+
+#### Example Request
+
+```bash
+curl -X POST https://api.bioquery.io/v1/query \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Is DDR1 expression higher in papillary RCC vs clear cell RCC?"
+  }'
+```
+
+#### Response
+
+```json
+{
+  "id": "card_abc123xyz",
+  "status": "completed",
+  "created_at": "2024-01-15T10:30:00Z",
+  "query": {
+    "original": "Is DDR1 expression higher in papillary RCC vs clear cell RCC?",
+    "parsed": {
+      "gene": "DDR1",
+      "cancer_types": ["KIRP", "KIRC"],
+      "analysis_type": "differential_expression"
+    },
+    "sql": "SELECT sample_id, cancer_type, gene_expression FROM tcga.expression WHERE gene_symbol = 'DDR1' AND cancer_type IN ('KIRP', 'KIRC')"
+  },
+  "results": {
+    "answer": "DDR1 expression is significantly higher in papillary RCC (KIRP) compared to clear cell RCC (KIRC), with a 2.3-fold increase (p < 0.001, Wilcoxon rank-sum test).",
+    "statistics": {
+      "p_value": 0.00032,
+      "fold_change": 2.3,
+      "effect_size": 0.85,
+      "test": "wilcoxon_ranksum"
+    },
+    "sample_sizes": {
+      "KIRP": 290,
+      "KIRC": 533
+    }
+  },
+  "figure": {
+    "type": "boxplot",
+    "plotly_json": { ... }
+  },
+  "methods": "Gene expression data were obtained from The Cancer Genome Atlas (TCGA). DDR1 mRNA expression (log2 TPM+1) was compared between papillary renal cell carcinoma (KIRP, n=290) and clear cell renal cell carcinoma (KIRC, n=533) using a Wilcoxon rank-sum test."
+}
+```
+
+---
+
+### Get Query Card
+
+Retrieve a previously created Query Card by ID.
+
+```
+GET /v1/cards/{card_id}
+```
+
+#### Path Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `card_id` | string | The Query Card ID |
+
+#### Example Request
+
+```bash
+curl https://api.bioquery.io/v1/cards/card_abc123xyz \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+#### Response
+
+Returns the full Query Card object (same format as Create Query response).
+
+---
+
+### List Query Cards
+
+Get a list of your Query Cards.
+
+```
+GET /v1/cards
+```
+
+#### Query Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `limit` | integer | 20 | Number of cards to return (max 100) |
+| `offset` | integer | 0 | Pagination offset |
+| `sort` | string | "created_at" | Sort field |
+| `order` | string | "desc" | Sort order (asc/desc) |
+
+#### Example Request
+
+```bash
+curl "https://api.bioquery.io/v1/cards?limit=10&offset=0" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "cards": [
+    {
+      "id": "card_abc123xyz",
+      "query": "Is DDR1 higher in KIRP vs KIRC?",
+      "created_at": "2024-01-15T10:30:00Z",
+      "analysis_type": "differential_expression"
+    },
+    ...
+  ],
+  "total": 42,
+  "limit": 10,
+  "offset": 0
+}
+```
+
+---
+
+## Data Endpoints
+
+### List Cancer Types
+
+Get available cancer types and their TCGA codes.
+
+```
+GET /v1/data/cancer-types
+```
+
+#### Example Response
+
+```json
+{
+  "cancer_types": [
+    {
+      "code": "BRCA",
+      "name": "Breast invasive carcinoma",
+      "sample_count": 1098
+    },
+    {
+      "code": "LUAD",
+      "name": "Lung adenocarcinoma",
+      "sample_count": 533
+    },
+    ...
+  ]
+}
+```
+
+---
+
+### List Genes
+
+Get available genes.
+
+```
+GET /v1/data/genes
+```
+
+#### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `search` | string | Filter by gene symbol prefix |
+| `limit` | integer | Number of results (default 100) |
+
+#### Example Request
+
+```bash
+curl "https://api.bioquery.io/v1/data/genes?search=DDR&limit=10" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+#### Example Response
+
+```json
+{
+  "genes": [
+    {"symbol": "DDR1", "name": "Discoidin domain receptor tyrosine kinase 1"},
+    {"symbol": "DDR2", "name": "Discoidin domain receptor tyrosine kinase 2"}
+  ]
+}
+```
+
+---
+
+## Export Endpoints
+
+### Export Figure
+
+Export a Query Card figure in various formats.
+
+```
+GET /v1/cards/{card_id}/export/{format}
+```
+
+#### Path Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `card_id` | string | The Query Card ID |
+| `format` | string | Export format: `png`, `svg`, or `json` |
+
+#### Query Parameters (PNG only)
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `width` | integer | 800 | Image width in pixels |
+| `height` | integer | 600 | Image height in pixels |
+| `scale` | number | 2 | Scale factor for DPI |
+
+#### Example Request
+
+```bash
+# PNG export
+curl "https://api.bioquery.io/v1/cards/card_abc123xyz/export/png?width=1200&height=800" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -o figure.png
+
+# SVG export
+curl "https://api.bioquery.io/v1/cards/card_abc123xyz/export/svg" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -o figure.svg
+```
+
+---
+
+## Response Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Created (new Query Card) |
+| 400 | Bad Request (invalid query or parameters) |
+| 401 | Unauthorized (invalid API key) |
+| 403 | Forbidden (no API access) |
+| 404 | Not Found (card doesn't exist) |
+| 429 | Too Many Requests (rate limited) |
+| 500 | Internal Server Error |
+
+See [Error Handling](/api/errors) for detailed error responses.

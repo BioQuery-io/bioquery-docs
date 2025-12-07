@@ -1,0 +1,163 @@
+# Mutation Queries
+
+Examples of mutation frequency analyses.
+
+## Basic Mutation Frequency
+
+Calculate how often a gene is mutated in a specific cancer type.
+
+### Percentage Format
+
+```
+What percentage of glioblastoma patients have IDH1 mutations?
+```
+
+**What you'll get:**
+- Bar chart showing mutation rate
+- Percentage with confidence interval
+- Total sample count
+- Breakdown by mutation type (if applicable)
+
+### Rate Format
+
+```
+What's the TP53 mutation rate in colorectal cancer?
+```
+
+Same analysis, different phrasing.
+
+---
+
+## Specific Mutations
+
+### Hotspot Mutations
+
+```
+How common is BRAF V600E in melanoma?
+What's the frequency of EGFR L858R in lung adenocarcinoma?
+Is KRAS G12D common in pancreatic cancer?
+```
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  Hotspot queries search for specific amino acid changes in the mutation data.
+</Callout>
+
+### Mutation Classes
+
+```
+What percentage of colorectal cancer has KRAS mutations?
+How common are PIK3CA mutations in breast cancer?
+```
+
+These return all mutation types affecting the gene.
+
+---
+
+## Cancer-Specific Examples
+
+### Glioblastoma
+
+```
+What percentage of GBM has IDH1 mutations?
+Is PTEN mutated in glioblastoma?
+How common are EGFR amplifications in GBM?
+```
+
+<Callout>
+  IDH1 mutations distinguish primary GBM from secondary GBM (arising from lower-grade glioma).
+</Callout>
+
+### Melanoma
+
+```
+What's the BRAF mutation rate in melanoma?
+How common is BRAF V600E in skin melanoma?
+Is NRAS mutated in BRAF-wildtype melanoma?
+```
+
+### Lung Cancer
+
+```
+What percentage of lung adenocarcinoma has EGFR mutations?
+How common is KRAS G12C in LUAD?
+Is ALK rearranged in lung cancer?
+```
+
+### Colorectal Cancer
+
+```
+What's the KRAS mutation rate in colorectal cancer?
+How common are BRAF mutations in MSI-H colorectal tumors?
+Is APC mutated in most colorectal cancers?
+```
+
+### Breast Cancer
+
+```
+What percentage of breast cancer has PIK3CA mutations?
+How common are TP53 mutations in triple-negative breast cancer?
+Is BRCA1 mutated in hereditary breast cancer cases?
+```
+
+---
+
+## Comparing Mutation Rates
+
+### Between Cancer Types
+
+```
+Is TP53 mutated more often in LUSC than LUAD?
+Compare KRAS mutation rates between pancreatic and colorectal cancer
+```
+
+<Callout type="warning">
+  Comparison queries for mutations are in beta. Results show rates side-by-side.
+</Callout>
+
+---
+
+## Understanding Mutation Data
+
+### Data Source
+
+BioQuery uses TCGA MC3 somatic mutation calls:
+- Curated, validated mutations
+- Multiple callers with consensus filtering
+- Excludes germline variants
+
+### Mutation Types Included
+
+| Type | Description | Example |
+|------|-------------|---------|
+| Missense | Amino acid substitution | BRAF V600E |
+| Nonsense | Premature stop codon | APC R1450* |
+| Frameshift | Reading frame disruption | BRCA1 185delAG |
+| Splice site | Affects mRNA splicing | TP53 splice |
+| In-frame indel | Preserves reading frame | EGFR exon 19 del |
+
+### What's NOT Included
+
+- Copy number alterations (amplifications, deletions)
+- Structural variants (translocations, inversions)
+- Germline variants
+- Promoter mutations
+
+---
+
+## Common Questions
+
+### "Why is the mutation rate lower than expected?"
+
+- TCGA uses stringent filters
+- Only high-confidence somatic calls included
+- Some databases include germline or low-quality calls
+
+### "Can I query copy number?"
+
+Copy number analysis is planned for a future release. Currently, only point mutations and indels are supported.
+
+### "What about fusion genes?"
+
+Fusion gene queries (e.g., BCR-ABL, EML4-ALK) are coming soon.

@@ -1,0 +1,169 @@
+# Analysis Types
+
+BioQuery supports four main types of genomic analyses. Learn when to use each one.
+
+## Differential Expression
+
+Compare gene expression between two cancer types or conditions.
+
+### When to Use
+
+- Comparing expression between cancer subtypes
+- Investigating tissue-specific expression patterns
+- Validating gene signatures across cancer types
+
+### Example Queries
+
+```
+Is DDR1 expression higher in papillary RCC vs clear cell RCC?
+Compare EGFR expression between LUAD and LUSC
+How does HER2 expression differ between ER+ and ER- breast cancer?
+```
+
+### Statistical Method
+
+- **Test**: Wilcoxon rank-sum test (non-parametric)
+- **Metric**: Fold change (log2 difference in medians)
+- **Visualization**: Boxplot with individual data points
+
+### Interpreting Results
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  Expression values are log2(TPM+1) normalized. A fold change of 2 means the gene is expressed ~2x higher in one group.
+</Callout>
+
+## Tumor vs Normal
+
+Compare gene expression in tumor tissue versus matched normal tissue.
+
+### When to Use
+
+- Identifying genes upregulated in cancer
+- Finding potential therapeutic targets
+- Validating known oncogenes/tumor suppressors
+
+### Example Queries
+
+```
+Is TP53 upregulated in breast cancer compared to normal?
+What's the fold change of BRCA1 in ovarian tumors vs normal?
+Is MYC overexpressed in liver cancer?
+```
+
+### Data Sources
+
+- **Tumor**: TCGA tumor samples
+- **Normal**: TCGA matched normal + GTEx normal tissue
+
+### Statistical Method
+
+- **Test**: Wilcoxon rank-sum test
+- **Metric**: Fold change and log2 difference
+- **Visualization**: Grouped boxplot (Tumor vs Normal)
+
+<Callout type="warning">
+  Not all cancer types have matched normal samples. Some comparisons use GTEx data as normal reference.
+</Callout>
+
+## Mutation Frequency
+
+Calculate how often a gene is mutated in a specific cancer type.
+
+### When to Use
+
+- Identifying driver mutations
+- Understanding mutation landscape of a cancer
+- Finding potential biomarkers
+
+### Example Queries
+
+```
+What percentage of glioblastoma has IDH1 mutations?
+How common is BRAF V600E in melanoma?
+What's the TP53 mutation rate in colorectal cancer?
+```
+
+### Statistical Method
+
+- **Metric**: Percentage of samples with mutation
+- **Data**: TCGA somatic mutation calls (MC3)
+- **Visualization**: Bar chart with confidence intervals
+
+### Mutation Types Included
+
+| Type | Description |
+|------|-------------|
+| Missense | Amino acid change |
+| Nonsense | Premature stop codon |
+| Frameshift | Insertion/deletion causing frame shift |
+| Splice site | Affects mRNA splicing |
+
+<Callout type="info">
+  Copy number alterations are analyzed separately and not included in mutation frequency calculations.
+</Callout>
+
+## Survival Analysis
+
+Examine how gene expression relates to patient outcomes.
+
+### When to Use
+
+- Identifying prognostic biomarkers
+- Validating therapeutic targets
+- Understanding disease progression
+
+### Example Queries
+
+```
+Does high DDR1 expression predict worse survival in kidney cancer?
+Is BRCA1 expression associated with overall survival in ovarian cancer?
+Do patients with high MYC have worse prognosis in lymphoma?
+```
+
+### Statistical Method
+
+- **Test**: Log-rank test
+- **Metric**: Hazard ratio (Cox regression)
+- **Stratification**: Median expression split (high vs low)
+- **Visualization**: Kaplan-Meier curves
+
+### Survival Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| Overall Survival (OS) | Time to death from any cause |
+| Progression-Free Survival (PFS) | Time to disease progression or death |
+| Disease-Specific Survival (DSS) | Time to death from cancer |
+
+### Interpreting Kaplan-Meier Curves
+
+- **Y-axis**: Probability of survival
+- **X-axis**: Time (usually months or years)
+- **Curves**: One per group (high/low expression)
+- **Tick marks**: Censored patients (lost to follow-up)
+- **Shading**: 95% confidence interval
+
+<Callout type="warning">
+  Survival data has limitations: follow-up time varies, some patients are censored, and treatment effects are not accounted for.
+</Callout>
+
+## Choosing the Right Analysis
+
+| Question Type | Analysis | Example |
+|--------------|----------|---------|
+| "Is gene X higher in cancer A vs B?" | Differential Expression | "Is EGFR higher in LUAD vs LUSC?" |
+| "Is gene X upregulated in cancer?" | Tumor vs Normal | "Is MYC upregulated in breast cancer?" |
+| "How often is gene X mutated?" | Mutation Frequency | "What's the TP53 mutation rate in GBM?" |
+| "Does gene X predict survival?" | Survival Analysis | "Does high DDR1 predict worse survival?" |
+
+## Combining Analyses
+
+For comprehensive characterization of a gene, consider running multiple query types:
+
+1. **Expression**: Is the gene overexpressed in the cancer?
+2. **Mutations**: Is the gene frequently mutated?
+3. **Survival**: Does expression predict patient outcomes?
+
+This multi-angle approach provides stronger evidence for therapeutic relevance.

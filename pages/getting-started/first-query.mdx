@@ -1,0 +1,148 @@
+# Your First Query
+
+Learn how to write effective queries and understand what BioQuery can answer.
+
+## What You Can Ask
+
+BioQuery understands natural language questions about cancer genomics. Here are the main types of queries:
+
+### Gene Expression Comparisons
+
+Compare expression levels between cancer types or conditions:
+
+```
+Is DDR1 expression higher in papillary RCC vs clear cell RCC?
+Compare EGFR expression between lung adenocarcinoma and squamous cell carcinoma
+How does MYC expression differ between ER+ and ER- breast cancer?
+```
+
+### Tumor vs Normal
+
+Compare tumor samples to normal tissue:
+
+```
+Is TP53 upregulated in breast cancer compared to normal breast tissue?
+What's the fold change of BRCA1 in ovarian tumors vs normal?
+Is KRAS expression different in pancreatic cancer vs normal pancreas?
+```
+
+### Mutation Frequency
+
+Calculate how often genes are mutated in specific cancers:
+
+```
+What percentage of glioblastoma patients have IDH1 mutations?
+How common is BRAF V600E in melanoma?
+What's the TP53 mutation rate in colorectal cancer?
+```
+
+### Survival Analysis
+
+Examine how gene expression relates to patient outcomes:
+
+```
+Does high DDR1 expression predict worse survival in kidney cancer?
+Is BRCA1 expression associated with overall survival in ovarian cancer?
+Do patients with high MYC expression have worse prognosis in lymphoma?
+```
+
+## Writing Effective Queries
+
+### Be Specific About Cancer Types
+
+import { Callout } from 'nextra/components'
+
+<Callout type="warning">
+  Use specific cancer type names or TCGA abbreviations for best results.
+</Callout>
+
+**Good examples:**
+- "papillary renal cell carcinoma" or "KIRP"
+- "lung adenocarcinoma" or "LUAD"
+- "glioblastoma multiforme" or "GBM"
+
+**Avoid vague terms:**
+- "kidney cancer" (which type?)
+- "lung cancer" (adenocarcinoma or squamous?)
+
+### Use Standard Gene Symbols
+
+Use official HGNC gene symbols:
+
+| ✅ Use This | ❌ Not This |
+|-------------|-------------|
+| TP53 | p53 |
+| EGFR | EGF receptor |
+| BRCA1 | breast cancer gene |
+
+### Common TCGA Cancer Codes
+
+| Code | Cancer Type |
+|------|-------------|
+| BRCA | Breast invasive carcinoma |
+| LUAD | Lung adenocarcinoma |
+| LUSC | Lung squamous cell carcinoma |
+| GBM | Glioblastoma multiforme |
+| KIRC | Kidney renal clear cell carcinoma |
+| KIRP | Kidney renal papillary cell carcinoma |
+| COAD | Colon adenocarcinoma |
+| PRAD | Prostate adenocarcinoma |
+| OV | Ovarian serous cystadenocarcinoma |
+| SKCM | Skin cutaneous melanoma |
+
+## Example Walkthrough
+
+Let's run through a complete example:
+
+### 1. Type Your Question
+
+```
+Is DDR1 expression higher in papillary RCC compared to clear cell RCC?
+```
+
+### 2. BioQuery Processes Your Query
+
+Behind the scenes, BioQuery:
+1. Parses your natural language question
+2. Identifies: gene (DDR1), cancer types (KIRP, KIRC), analysis type (differential expression)
+3. Generates and runs a SQL query against TCGA data
+4. Performs statistical analysis
+5. Creates visualizations
+
+### 3. Review Your Results
+
+You'll receive a **Query Card** with:
+
+- **Answer**: "DDR1 expression is significantly higher in papillary RCC (KIRP) compared to clear cell RCC (KIRC)..."
+- **Figure**: Interactive boxplot comparing expression
+- **Statistics**: p-value, fold change, sample sizes
+- **Methods**: Ready-to-copy text for your paper
+
+### 4. Use Your Results
+
+- **Export**: Download PNG/SVG for presentations
+- **Share**: Copy permalink for collaborators
+- **Cite**: Use the methods text in your paper
+
+## Troubleshooting
+
+### "I don't understand that question"
+
+Try rephrasing with:
+- Specific gene symbols (TP53, not p53)
+- Specific cancer types (LUAD, not lung cancer)
+- Clearer comparison structure
+
+### "No data available"
+
+The gene or cancer type may not be in our database. Try:
+- Checking the gene symbol spelling
+- Using a different cancer type
+- Verifying the gene is expressed in that tissue
+
+### Unexpected Results
+
+If results seem wrong:
+- Check that you're comparing the right cancer types
+- Verify the gene symbol is correct
+- Look at the sample sizes - small N may be unreliable

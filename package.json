@@ -1,0 +1,17 @@
+{
+  "name": "bioquery-docs",
+  "version": "1.0.0",
+  "description": "BioQuery public documentation",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 8080"
+  },
+  "dependencies": {
+    "next": "^16.0.7",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  }
+}

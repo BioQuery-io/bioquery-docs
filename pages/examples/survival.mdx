@@ -1,0 +1,196 @@
+# Survival Queries
+
+Examples of survival analysis using gene expression.
+
+## Basic Survival Analysis
+
+Examine whether gene expression is associated with patient outcomes.
+
+### Prognostic Queries
+
+```
+Does high DDR1 expression predict worse survival in kidney cancer?
+```
+
+**What you'll get:**
+- Kaplan-Meier survival curves (High vs Low expression)
+- Log-rank test p-value
+- Hazard ratio with confidence interval
+- Median survival for each group
+
+### Association Queries
+
+```
+Is BRCA1 expression associated with overall survival in ovarian cancer?
+```
+
+Tests whether expression level is related to survival outcomes.
+
+---
+
+## Phrasing Variations
+
+All of these work:
+
+```
+Does high DDR1 predict worse survival in KIRC?
+Is DDR1 expression prognostic in kidney cancer?
+Do patients with high DDR1 have worse outcomes in RCC?
+Is DDR1 associated with survival in renal cell carcinoma?
+```
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  BioQuery understands various phrasings. If one doesn't work, try rephrasing.
+</Callout>
+
+---
+
+## Cancer-Specific Examples
+
+### Kidney Cancer
+
+```
+Does high DDR1 expression predict worse survival in clear cell RCC?
+Is VHL expression associated with survival in kidney cancer?
+Do patients with high HIF1A have worse prognosis in KIRC?
+```
+
+### Breast Cancer
+
+```
+Does high Ki67 predict worse survival in breast cancer?
+Is ESR1 expression prognostic in ER+ breast cancer?
+Do patients with high HER2 expression have worse outcomes?
+```
+
+### Lung Cancer
+
+```
+Does high EGFR predict survival in lung adenocarcinoma?
+Is KRAS expression associated with prognosis in NSCLC?
+Do patients with high PD-L1 have better survival in lung cancer?
+```
+
+### Glioblastoma
+
+```
+Is MGMT expression associated with survival in glioblastoma?
+Does high EGFR predict worse survival in GBM?
+Do patients with high IDH1 have better prognosis in glioma?
+```
+
+### Ovarian Cancer
+
+```
+Does high BRCA1 predict survival in ovarian cancer?
+Is CA125 expression associated with prognosis in ovarian tumors?
+Do patients with high VEGFA have worse survival in OV?
+```
+
+---
+
+## Understanding Results
+
+### Kaplan-Meier Curves
+
+- **Y-axis**: Survival probability (1.0 = 100% alive)
+- **X-axis**: Time (typically months or years)
+- **Two curves**: High expression (red) vs Low expression (blue)
+- **Tick marks**: Censored patients (still alive at last follow-up)
+- **Shading**: 95% confidence interval
+
+### Hazard Ratio Interpretation
+
+| HR | Interpretation |
+|----|----------------|
+| HR = 1 | No association |
+| HR > 1 | High expression = higher risk of death |
+| HR < 1 | High expression = lower risk of death |
+| HR = 2 | 2x higher risk in high expression group |
+
+<Callout type="warning">
+  Hazard ratios should be interpreted with confidence intervals. HR = 1.5 [0.8-2.8] is not statistically significant.
+</Callout>
+
+### P-value
+
+- **p < 0.05**: Statistically significant association
+- **p ≥ 0.05**: No significant association detected
+
+---
+
+## Survival Endpoints
+
+### Overall Survival (OS)
+
+```
+Does high MYC predict worse overall survival in lymphoma?
+```
+
+Time from diagnosis to death from any cause.
+
+### Progression-Free Survival
+
+```
+Is EGFR associated with progression-free survival in lung cancer?
+```
+
+Time from treatment to disease progression or death.
+
+<Callout>
+  Not all TCGA cancers have progression-free survival data. If unavailable, overall survival is used.
+</Callout>
+
+---
+
+## Stratification
+
+### Median Split (Default)
+
+By default, patients are split at median expression:
+- **High**: Above median
+- **Low**: Below or equal to median
+
+### Custom Cutoffs
+
+<Callout type="info">
+  Custom expression cutoffs (e.g., top quartile vs bottom quartile) are planned for a future release.
+</Callout>
+
+---
+
+## Limitations
+
+### Sample Size
+
+Survival analysis requires sufficient events (deaths) to be meaningful:
+- Small cancers (n < 100) may have wide confidence intervals
+- Rare cancers may not have enough follow-up
+
+### Confounding Factors
+
+TCGA data doesn't control for:
+- Treatment received
+- Stage at diagnosis (partially available)
+- Comorbidities
+- Patient demographics
+
+### Observational Data
+
+<Callout type="warning">
+  Survival associations are correlational, not causal. High expression correlating with poor survival doesn't mean the gene causes poor outcomes.
+</Callout>
+
+---
+
+## Combining with Other Analyses
+
+For comprehensive biomarker validation:
+
+1. **Expression**: "Is [gene] overexpressed in [cancer]?"
+2. **Survival**: "Does high [gene] predict worse survival?"
+3. **Mutations**: "Is [gene] frequently mutated?"
+
+Genes that are overexpressed AND predict poor survival are stronger therapeutic target candidates.

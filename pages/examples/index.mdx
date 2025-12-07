@@ -1,0 +1,77 @@
+# Example Queries
+
+Browse example queries by analysis type to learn how to get the most out of BioQuery.
+
+## Quick Reference
+
+| Analysis Type | Example Query |
+|--------------|---------------|
+| [Differential Expression](/examples/expression) | "Is EGFR higher in LUAD vs LUSC?" |
+| [Tumor vs Normal](/examples/expression#tumor-vs-normal) | "Is MYC upregulated in breast cancer?" |
+| [Mutation Frequency](/examples/mutations) | "What's the TP53 mutation rate in GBM?" |
+| [Survival Analysis](/examples/survival) | "Does high DDR1 predict worse survival?" |
+
+## Popular Queries
+
+### Oncogenes
+
+```
+Is MYC upregulated in breast cancer compared to normal?
+Is EGFR expression higher in lung adenocarcinoma vs squamous?
+What's the HER2 expression in HER2+ vs HER2- breast cancer?
+```
+
+### Tumor Suppressors
+
+```
+Is TP53 expression lower in tumors with TP53 mutations?
+Compare BRCA1 expression in ovarian cancer vs normal tissue
+Is RB1 downregulated in small cell lung cancer?
+```
+
+### Drug Targets
+
+```
+Does high ERBB2 expression predict survival in breast cancer?
+Is BRAF mutated in melanoma?
+What's the EGFR mutation rate in lung adenocarcinoma?
+```
+
+### Cancer-Specific Questions
+
+```
+# Kidney Cancer
+Is VHL mutated in clear cell RCC?
+Compare HIF1A expression between clear cell and papillary RCC
+
+# Glioblastoma
+What percentage of GBM has IDH1 mutations?
+Does MGMT expression predict survival in glioblastoma?
+
+# Breast Cancer
+Is ESR1 expression different between ER+ and ER- tumors?
+Does high Ki67 predict worse survival in breast cancer?
+```
+
+## Tips for Writing Queries
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  Use specific TCGA cancer type codes for best results: LUAD (lung adenocarcinoma), BRCA (breast), GBM (glioblastoma), etc.
+</Callout>
+
+### Be Specific
+
+✅ "Is DDR1 higher in papillary RCC vs clear cell RCC?"
+❌ "Is DDR1 higher in kidney cancer?"
+
+### Use Gene Symbols
+
+✅ "TP53 mutation rate in colorectal cancer"
+❌ "p53 mutations in colon cancer"
+
+### Specify Comparisons
+
+✅ "Compare EGFR between LUAD and LUSC"
+❌ "EGFR in lung cancer"

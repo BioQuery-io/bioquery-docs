@@ -1,0 +1,279 @@
+# Data Sources
+
+BioQuery integrates six major cancer genomics databases, all accessible through natural language queries.
+
+import { Callout } from 'nextra/components'
+
+## Overview
+
+| Source | Description | Samples | Data Types |
+|--------|-------------|---------|------------|
+| **TCGA** | The Cancer Genome Atlas | 11,000+ | Expression, Mutations, CNV, Survival |
+| **TARGET** | Pediatric cancers | 6,000+ | Expression, Mutations, Clinical |
+| **GTEx** | Normal tissue reference | 17,000+ | Expression |
+| **CCLE** | Cancer cell lines | ~1,000 | Expression, Mutations |
+| **CPTAC** | Proteomics | ~1,500 | Protein abundance |
+| **GENIE** | Real-world clinical | 40,000+ | Clinical data |
+
+All data is accessed via [ISB-CGC BigQuery](https://bq-search.isb-cgc.org/) for fast, reproducible queries.
+
+---
+
+## TCGA (The Cancer Genome Atlas)
+
+The primary data source for adult cancer genomics.
+
+### Available Cancer Types (33 types)
+
+| Code | Cancer Type | Samples |
+|------|-------------|---------|
+| BRCA | Breast invasive carcinoma | ~1,100 |
+| LUAD | Lung adenocarcinoma | ~600 |
+| LUSC | Lung squamous cell carcinoma | ~500 |
+| KIRC | Kidney renal clear cell carcinoma | ~530 |
+| KIRP | Kidney renal papillary cell carcinoma | ~290 |
+| GBM | Glioblastoma multiforme | ~170 |
+| OV | Ovarian serous cystadenocarcinoma | ~300 |
+| COAD | Colon adenocarcinoma | ~450 |
+| STAD | Stomach adenocarcinoma | ~400 |
+| PRAD | Prostate adenocarcinoma | ~500 |
+| LIHC | Liver hepatocellular carcinoma | ~370 |
+| PAAD | Pancreatic adenocarcinoma | ~180 |
+| SKCM | Skin cutaneous melanoma | ~470 |
+| HNSC | Head and neck squamous cell carcinoma | ~520 |
+| BLCA | Bladder urothelial carcinoma | ~400 |
+| THCA | Thyroid carcinoma | ~500 |
+| UCEC | Uterine corpus endometrial carcinoma | ~550 |
+
+[View all 33 cancer types](https://www.cancer.gov/ccg/research/genome-sequencing/tcga)
+
+### Data Types
+
+- **RNA-seq expression**: TPM-normalized, hg38 aligned
+- **Somatic mutations**: MC3 mutation calls
+- **Clinical/survival**: Overall survival, progression-free survival
+
+### Example Queries
+
+```
+Is EGFR expression higher in LUAD vs LUSC?
+What's the TP53 mutation rate in breast cancer?
+Does high DDR1 predict worse survival in kidney cancer?
+```
+
+---
+
+## TARGET (Therapeutically Applicable Research to Generate Effective Treatments)
+
+Pediatric cancer genomics data.
+
+### Available Cancer Types
+
+| Code | Cancer Type | Samples |
+|------|-------------|---------|
+| ALL | Acute lymphoblastic leukemia | ~1,500 |
+| AML | Acute myeloid leukemia | ~200 |
+| NBL | Neuroblastoma | ~150 |
+| OS | Osteosarcoma | ~100 |
+| WT | Wilms tumor | ~120 |
+| RT | Rhabdoid tumor | ~50 |
+| CCSK | Clear cell sarcoma of kidney | ~20 |
+
+### Common Synonyms
+
+- "childhood leukemia" or "pediatric leukemia" → ALL
+- "neuroblastoma" → NBL
+- "Wilms tumor" or "nephroblastoma" → WT
+- "osteosarcoma" or "bone cancer in children" → OS
+
+### Example Queries
+
+```
+What is MYC expression in neuroblastoma?
+Is MYCN amplified in neuroblastoma?
+Compare TP53 in pediatric AML vs ALL
+```
+
+<Callout type="info">
+  TARGET data uses the same RNA-seq pipeline as TCGA, so expression values are comparable.
+</Callout>
+
+---
+
+## GTEx (Genotype-Tissue Expression)
+
+Normal tissue expression reference for tumor vs normal comparisons.
+
+### Available Tissues (54 tissues)
+
+Common tissues used for comparison:
+
+| Tissue | TCGA Comparison |
+|--------|-----------------|
+| Breast - Mammary Tissue | BRCA |
+| Lung | LUAD, LUSC |
+| Kidney - Cortex | KIRC, KIRP |
+| Liver | LIHC |
+| Colon - Transverse | COAD |
+| Prostate | PRAD |
+| Thyroid | THCA |
+| Brain - Cortex | GBM, LGG |
+
+### Example Queries
+
+```
+Is MYC upregulated in breast cancer compared to normal?
+Compare DDR1 expression in lung cancer vs normal tissue
+Is TP53 higher in tumors vs normal liver?
+```
+
+<Callout type="warning">
+  GTEx samples are from healthy donors, while TCGA "matched normal" samples come from tissue adjacent to tumors. Results may differ.
+</Callout>
+
+---
+
+## CCLE (Cancer Cell Line Encyclopedia)
+
+Gene expression and mutation data for ~1,000 cancer cell lines.
+
+### Available Primary Sites
+
+| Site | Cell Lines |
+|------|------------|
+| Lung | 173 |
+| Haematopoietic/lymphoid | 167 |
+| Breast | 62 |
+| Large intestine | 58 |
+| Skin | 54 |
+| Central nervous system | 46 |
+| Ovary | 46 |
+| Pancreas | 41 |
+| Stomach | 37 |
+
+### Data Types
+
+- **Expression**: RMA-normalized microarray (Affymetrix)
+- **Mutations**: Whole-exome sequencing
+
+### Example Queries
+
+```
+What is DDR1 expression in lung cancer cell lines?
+Which cell line sites have highest EGFR expression?
+Is BRAF mutated in melanoma cell lines?
+```
+
+<Callout type="info">
+  CCLE expression uses RMA normalization, not TPM. Values are not directly comparable to TCGA RNA-seq data.
+</Callout>
+
+---
+
+## CPTAC (Clinical Proteomic Tumor Analysis Consortium)
+
+Mass spectrometry-based proteomics data.
+
+### Available Cancer Types
+
+| Code | Cancer Type | Samples |
+|------|-------------|---------|
+| CCRCC | Clear cell renal cell carcinoma | ~110 |
+| GBM | Glioblastoma | ~100 |
+| HNSCC | Head and neck squamous cell carcinoma | ~110 |
+| LSCC | Lung squamous cell carcinoma | ~110 |
+| LUAD | Lung adenocarcinoma | ~110 |
+| PDA | Pancreatic ductal adenocarcinoma | ~140 |
+| UCEC | Uterine corpus endometrial carcinoma | ~100 |
+| BRCA | Breast cancer | ~120 |
+| COAD | Colon adenocarcinoma | ~110 |
+| OV | Ovarian cancer | ~80 |
+
+### Data Types
+
+- **Protein abundance**: Log2 ratio vs pooled reference
+- **Phosphoproteomics**: Phosphosite quantification (available for most cancer types)
+
+### Example Queries
+
+```
+What is TP53 protein abundance in glioblastoma?
+Compare DDR1 protein levels across CPTAC cancers
+Does DDR1 mRNA correlate with protein in breast cancer?
+```
+
+<Callout type="warning">
+  Protein abundance is reported as log2 ratios relative to a pooled reference, not absolute concentrations.
+</Callout>
+
+---
+
+## GENIE (Genomics Evidence Neoplasia Information Exchange)
+
+Real-world clinical genomics data from multiple cancer centers.
+
+### Overview
+
+- **Patients**: ~40,000+
+- **Institutions**: DFCI, MSK, VICC, JHU, and others
+- **Data**: Clinical characteristics, demographics
+
+### Available Cancer Sites
+
+| Site | Patients |
+|------|----------|
+| Lung | ~7,000 |
+| Breast | ~5,000 |
+| Colon | ~4,500 |
+| CNS | ~2,700 |
+| Skin | ~2,000 |
+| Ovary | ~1,800 |
+| Pancreas | ~1,600 |
+| Prostate | ~1,500 |
+
+### Example Queries
+
+```
+What is the age distribution in lung cancer patients?
+Clinical summary for breast cancer patients
+```
+
+<Callout type="info">
+  GENIE currently provides clinical/demographic data. Genomic data (mutations, expression) coming soon.
+</Callout>
+
+---
+
+## Data Access
+
+All BioQuery data is accessed via the [ISB-CGC BigQuery](https://bq-search.isb-cgc.org/) public datasets. This ensures:
+
+- **Speed**: Sub-second query execution on terabytes of data
+- **Reproducibility**: Exact SQL queries provided for every analysis
+- **Transparency**: All tables and versions documented
+
+### BigQuery Tables Used
+
+```
+# TCGA
+isb-cgc-bq.TCGA.RNAseq_hg38_gdc_current
+isb-cgc-bq.TCGA.masked_somatic_mutation_hg38_gdc_current
+isb-cgc-bq.TCGA.clinical_gdc_current
+
+# TARGET
+isb-cgc-bq.TARGET.RNAseq_hg38_gdc_current
+isb-cgc-bq.TARGET.masked_somatic_mutation_hg38_gdc_current
+
+# GTEx
+isb-cgc.GTEx_v7.gene_median_tpm
+
+# CCLE
+isb-cgc-bq.CCLE.RMA_expression_hg19_current
+isb-cgc-bq.CCLE.somatic_mutation_hg19_current
+
+# CPTAC
+isb-cgc-bq.CPTAC.quant_proteome_*
+
+# GENIE
+isb-cgc-bq.GENIE.clinical_gdc_current
+```

@@ -9,6 +9,9 @@ BioQuery is a natural language interface for exploring cancer genomics data from
 - **TCGA** - The Cancer Genome Atlas (33 cancer types, 11,000+ patients)
 - **GTEx** - Genotype-Tissue Expression (normal tissue reference)
 - **TARGET** - Pediatric cancers (7 cancer types, 6,000+ patients)
+- **CCLE** - Cancer Cell Line Encyclopedia (~1,000 cell lines)
+- **CPTAC** - Proteomics data (10 cancer types)
+- **GENIE** - Real-world clinical genomics (~40,000 patients)
 
 All data is queried via [ISB-CGC BigQuery](https://bq-search.isb-cgc.org/) for fast, reproducible results.
 
@@ -17,6 +20,8 @@ Ask questions like:
 - "Is DDR1 expression higher in papillary RCC vs clear cell RCC?"
 - "Does high TP53 expression predict worse survival in lung cancer?"
 - "What's the BRAF mutation rate in melanoma?"
+- "What's DDR1 expression in lung cancer cell lines?"
+- "What is TP53 protein abundance in glioblastoma?"
 
 ## Key Features
 
@@ -39,6 +44,8 @@ Every query generates a **Query Card** - a reproducible, shareable analysis unit
 | **Tumor vs Normal** | Compare tumor to normal tissue | "Is MYC upregulated in breast cancer?" |
 | **Mutation Frequency** | Calculate mutation rates | "What % of GBM has IDH1 mutations?" |
 | **Survival Analysis** | Kaplan-Meier curves | "Does high DDR1 predict worse survival?" |
+| **Cell Line Expression** | Gene expression in CCLE cell lines | "DDR1 expression in lung cancer cell lines" |
+| **Protein Expression** | Protein abundance from CPTAC | "TP53 protein levels in glioblastoma" |
 
 ## Quick Start
 

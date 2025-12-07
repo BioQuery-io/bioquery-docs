@@ -56,8 +56,8 @@ The structured interpretation of the user's query.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `data_type` | string | Data type: `expression`, `mutation`, `cnv`, `unclear` |
-| `analysis_type` | string | Analysis type: `differential_expression`, `mutation_frequency`, `survival_analysis`, `pan_cancer_expression`, `correlation`, `unclear` |
+| `data_type` | string | Data type: `expression`, `mutation`, `cnv`, `protein`, `unclear` |
+| `analysis_type` | string | Analysis type: `differential_expression`, `mutation_frequency`, `survival_analysis`, `pan_cancer_expression`, `correlation`, `tumor_vs_normal`, `ccle_expression`, `cptac_protein_expression`, `mrna_protein_correlation`, `unclear` |
 | `gene` | string | Primary gene of interest |
 | `gene_id` | string? | Ensembl gene ID |
 | `genes` | string[]? | Multiple genes (for correlation queries) |
@@ -98,7 +98,7 @@ Information about the data source used for the analysis.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `name` | string | Data source name (e.g., `"TCGA"`) |
+| `name` | string | Data source name: `"TCGA"`, `"TARGET"`, `"GTEx"`, `"CCLE"`, `"CPTAC"`, `"GENIE"` |
 | `release` | string | Release version (e.g., `"GDC Release 39"`) |
 | `accessed_at` | datetime | When data was accessed |
 | `genome_build` | string | Reference genome (e.g., `"hg38"`) |

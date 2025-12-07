@@ -1,6 +1,17 @@
 # Analysis Types
 
-BioQuery supports four main types of genomic analyses. Learn when to use each one.
+BioQuery supports multiple types of genomic analyses across six data sources. Learn when to use each one.
+
+## Data Sources
+
+| Source | Description | Data Types |
+|--------|-------------|------------|
+| **TCGA** | The Cancer Genome Atlas - 33 adult cancer types | Expression, Mutations, Survival |
+| **TARGET** | Pediatric cancers - 7 cancer types | Expression, Mutations, Clinical |
+| **GTEx** | Normal tissue reference - 54 tissues | Expression |
+| **CCLE** | Cancer Cell Line Encyclopedia - ~1,000 cell lines | Expression, Mutations |
+| **CPTAC** | Clinical Proteomics - 10 cancer types | Protein abundance, Phosphoproteomics |
+| **GENIE** | Real-world clinical - ~40,000 patients | Clinical data |
 
 ## Differential Expression
 
@@ -157,6 +168,82 @@ Do patients with high MYC have worse prognosis in lymphoma?
 | "Is gene X upregulated in cancer?" | Tumor vs Normal | "Is MYC upregulated in breast cancer?" |
 | "How often is gene X mutated?" | Mutation Frequency | "What's the TP53 mutation rate in GBM?" |
 | "Does gene X predict survival?" | Survival Analysis | "Does high DDR1 predict worse survival?" |
+| "Gene X in cell lines?" | Cell Line Expression | "DDR1 in lung cancer cell lines" |
+| "Gene X protein levels?" | Protein Expression | "TP53 protein in glioblastoma" |
+
+## Cell Line Expression (CCLE)
+
+Analyze gene expression across ~1,000 cancer cell lines from the Cancer Cell Line Encyclopedia.
+
+### When to Use
+
+- Studying gene expression in in vitro models
+- Identifying cell lines for drug screening
+- Comparing tumor vs cell line expression
+- Pre-clinical target validation
+
+### Example Queries
+
+```
+What is DDR1 expression in lung cancer cell lines?
+Compare TP53 expression across all CCLE cell lines
+Which cell line sites have highest EGFR expression?
+```
+
+### Data Details
+
+- **Expression**: RMA-normalized microarray data
+- **Sites**: ~30 primary sites (lung, breast, CNS, ovary, etc.)
+- **Cell Lines**: ~1,000 characterized cell lines
+- **Visualization**: Boxplot by primary site
+
+<Callout type="info">
+  CCLE expression uses RMA normalization (not TPM), so values are not directly comparable to TCGA RNA-seq data.
+</Callout>
+
+## Protein Expression (CPTAC)
+
+Analyze protein abundance from mass spectrometry-based proteomics.
+
+### When to Use
+
+- Understanding post-transcriptional regulation
+- Comparing mRNA vs protein levels
+- Identifying proteins that don't correlate with mRNA
+- Proteomics-based biomarker discovery
+
+### Example Queries
+
+```
+What is TP53 protein abundance in glioblastoma?
+Compare DDR1 protein levels across CPTAC cancers
+Does DDR1 mRNA correlate with protein in breast cancer?
+```
+
+### Available Cancer Types
+
+| CPTAC Code | Cancer Type |
+|------------|-------------|
+| CCRCC | Clear cell renal cell carcinoma |
+| GBM | Glioblastoma |
+| HNSCC | Head and neck squamous cell carcinoma |
+| LSCC | Lung squamous cell carcinoma |
+| LUAD | Lung adenocarcinoma |
+| PDA | Pancreatic ductal adenocarcinoma |
+| UCEC | Uterine corpus endometrial carcinoma |
+| BRCA | Breast cancer |
+| COAD | Colon adenocarcinoma |
+| OV | Ovarian cancer |
+
+### Data Details
+
+- **Metric**: Log2 ratio (sample vs reference)
+- **Method**: TMT-labeled mass spectrometry
+- **Normalization**: Median-centered log2 ratios
+
+<Callout type="warning">
+  Protein abundance values are log2 ratios relative to a pooled reference, not absolute concentrations.
+</Callout>
 
 ## Combining Analyses
 
@@ -165,5 +252,7 @@ For comprehensive characterization of a gene, consider running multiple query ty
 1. **Expression**: Is the gene overexpressed in the cancer?
 2. **Mutations**: Is the gene frequently mutated?
 3. **Survival**: Does expression predict patient outcomes?
+4. **Cell Lines**: Is the gene expressed in relevant cell line models?
+5. **Protein**: Does protein abundance match mRNA expression?
 
 This multi-angle approach provides stronger evidence for therapeutic relevance.

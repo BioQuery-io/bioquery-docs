@@ -1,0 +1,216 @@
+# Query Cards
+
+Query Cards are the heart of BioQuery - portable, reproducible, citable units of cancer genomics analysis.
+
+## What is a Query Card?
+
+When you ask BioQuery a question, you don't just get an answer. You get a **Query Card** - a complete package containing:
+
+- Your question and how it was interpreted
+- The data that was analyzed
+- The statistical methods used
+- The results and visualization
+- Everything needed to reproduce and cite the analysis
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  Every Query Card has a permanent URL. Results don't expire, and anyone can verify exactly what was done.
+</Callout>
+
+## Why Query Cards?
+
+### The Problem with Traditional Tools
+
+Most bioinformatics tools give you results without context:
+- Screenshots that can't be verified
+- PDFs that can't be built upon
+- Results that depend on remembering your parameters
+- No way to show your exact methodology
+
+This creates problems for:
+- **Reproducibility**: Can you redo this analysis in 6 months?
+- **Collaboration**: Can colleagues understand exactly what you did?
+- **Publication**: Can reviewers verify your methods?
+- **Trust**: How do readers know the analysis is sound?
+
+### The Query Card Solution
+
+Query Cards are designed from the ground up for scientific rigor:
+
+| Traditional Output | Query Card |
+|-------------------|------------|
+| "Gene X is overexpressed" | Complete statistical results with p-values, effect sizes, sample counts |
+| Screenshot of a plot | Interactive figure + static exports + raw data |
+| "We used TCGA data" | Exact data version, access timestamp, SQL query |
+| "Statistical analysis was performed" | Full methods text ready for your paper |
+
+## Anatomy of a Query Card
+
+### 1. Question & Interpretation
+
+Every card shows:
+- **Your question**: The natural language you typed
+- **Interpretation**: How BioQuery understood it (genes, cancers, comparison type)
+
+This transparency lets you verify the analysis matches your intent.
+
+### 2. Data Source
+
+You'll always know:
+- Which database was queried (TCGA, GTEx, etc.)
+- The data version/release
+- When the data was accessed
+- Exact sample counts per group
+
+### 3. Statistical Methods
+
+No black boxes. Each card includes:
+- Statistical test used (Wilcoxon, log-rank, etc.)
+- Multiple testing correction (if applicable)
+- Confidence level
+- All parameters
+
+### 4. Results
+
+Clear, quantified findings:
+- Natural language summary
+- P-value and significance
+- Effect size with confidence intervals
+- Group-level statistics
+
+### 5. Visualization
+
+Publication-ready figures:
+- Interactive (hover, zoom, pan)
+- Exportable (PNG, SVG, PDF)
+- Accessible (alt-text included)
+
+### 6. Reproducibility Package
+
+Everything for independent verification:
+- **SQL Query**: The exact query executed on the database
+- **Methods Text**: Ready to paste into your paper
+- **Citations**: Proper attribution for data sources
+
+## Using Query Cards
+
+### Sharing
+
+Every card has a permanent URL:
+```
+https://bioquery.io/card/bq-2025-01-15-a7f3x
+```
+
+Share this link anywhere. Recipients can:
+- View the complete analysis
+- Interact with the figure
+- See all methodology
+- Export for their own use
+
+No login required to view shared cards.
+
+### Citing in Publications
+
+Include Query Cards in your research:
+
+**In-text:**
+> DDR1 expression was significantly higher in KIRP vs KIRC (p < 0.001, Wilcoxon rank-sum test). Analysis performed using BioQuery (bioquery.io/card/bq-2025-01-15-a7f3x).
+
+**Methods section:**
+Copy the auto-generated methods text directly from your card. It includes:
+- Data source attribution
+- Statistical methodology
+- Software citation
+
+### Exporting
+
+Download your results in multiple formats:
+
+| Format | Best For |
+|--------|----------|
+| PNG | Presentations, quick sharing |
+| SVG | Publications (vector, editable) |
+| PDF | Print, archival |
+| JSON | Programmatic access, data extraction |
+
+### Building On Cards
+
+Query Cards support research workflows:
+- **Save to Project**: Organize related cards together
+- **Fork**: Create variations on existing analyses
+- **Publish as Study**: Share with the community
+
+## Design Philosophy
+
+### Transparency Over Convenience
+
+We show everything, even when it makes the UI busier. You can always see:
+- The SQL query (even if you don't read SQL)
+- Statistical parameters (even if you trust defaults)
+- Data versions (even if they rarely matter)
+
+Why? Because the one time it does matter, you'll be glad it's there.
+
+### Immutability
+
+Query Cards cannot be edited after creation. This is intentional:
+- Results are permanent and verifiable
+- Links always show the same analysis
+- Scientific record is preserved
+
+Want to modify? Fork the card - the new card links to the original.
+
+### Reproducibility
+
+Every card contains enough information to reproduce the result:
+- Independent of BioQuery (the SQL works anywhere)
+- Independent of time (data versions are recorded)
+- Independent of the user (no hidden preferences)
+
+## Query Card ID Format
+
+Card IDs are designed to be:
+- **Human-readable**: Date is visible for context
+- **Shareable**: Short enough to say aloud
+- **Unique**: Random suffix prevents collisions
+
+```
+bq-2025-01-15-a7f3x
+│  │    │  │  │
+│  │    │  │  └── Random identifier
+│  │    │  └───── Day
+│  │    └──────── Month
+│  └───────────── Year
+└──────────────── BioQuery prefix
+```
+
+## Licensing
+
+Query Card outputs are licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+
+**You can:**
+- Share and redistribute
+- Adapt and build upon
+- Use commercially
+
+**You must:**
+- Credit BioQuery
+- Link to the original card
+- Note any changes made
+
+## Schema Versioning
+
+Query Cards include a version number. As BioQuery evolves:
+- New fields may be added (backward compatible)
+- Old cards remain valid forever
+- Version is displayed for transparency
+
+Current schema version: **1.0**
+
+## Next Steps
+
+- [Understanding Results](/guides/understanding-results) - How to interpret Query Card contents
+- [Exporting](/guides/exporting) - Download formats and options
+- [Sharing](/guides/sharing) - Collaboration workflows
+- [Query Card Schema](/api/query-card-schema) - Technical schema reference

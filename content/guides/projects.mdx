@@ -1,0 +1,155 @@
+# Projects
+
+Organize your research into Projects - rich containers that capture context, hypotheses, and findings.
+
+## What are Projects?
+
+Projects are research containers that go beyond simple collections. They let you:
+
+- Group related Query Cards together
+- Document your research hypothesis
+- Add notes and observations
+- Link external resources (papers, pathways)
+- Collaborate with team members
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  Projects require a free BioQuery account. Sign up at bioquery.io/signup.
+</Callout>
+
+## Creating a Project
+
+### From Scratch
+
+1. Go to **Projects** in the navigation
+2. Click **New Project**
+3. Enter a name and optional description
+4. Add your hypothesis (optional but recommended)
+
+### From Query Results
+
+After running a query:
+
+1. Click **Save to Project** on the Query Card
+2. Choose an existing project or create a new one
+3. Optionally mark as a key finding
+
+### From an Exploration
+
+If you've been running queries in an Exploration session:
+
+1. Click **Save as Project** on the exploration page
+2. All queries from the session are converted to project cards
+
+## Project Components
+
+### Cards
+
+Query Cards saved to your project. Each card includes:
+
+- Original query and results
+- Position (drag to reorder)
+- Section assignment (e.g., "Expression Analysis", "Survival")
+- Key finding flag
+- Personal notes
+
+### Hypothesis
+
+Document your research hypothesis at the project level. This appears prominently and helps frame your investigation.
+
+**Example:**
+> DDR1 overexpression in papillary RCC may serve as a prognostic biomarker and therapeutic target.
+
+### Notes
+
+Add timestamped notes to document:
+
+- Observations from your analysis
+- Questions to explore
+- Decisions made
+- Meeting notes
+
+Note types: `note`, `observation`, `question`, `decision`
+
+### External Links
+
+Link related resources:
+
+| Link Type | Use Case |
+|-----------|----------|
+| `paper` | PubMed, DOI links to relevant literature |
+| `pathway` | KEGG, Reactome pathway links |
+| `resource` | GeneCards, UniProt, other databases |
+| `other` | Any other relevant URL |
+
+## Collaboration
+
+### Sharing Projects
+
+Projects can be shared with collaborators:
+
+1. Go to your project
+2. Click **Invite Collaborators**
+3. Enter email addresses
+4. Choose their role
+
+### Roles
+
+| Role | Can View | Can Edit | Can Delete | Can Invite |
+|------|----------|----------|------------|------------|
+| Owner | Yes | Yes | Yes | Yes |
+| Editor | Yes | Yes | No | No |
+| Viewer | Yes | No | No | No |
+
+<Callout type="info">
+  Organization members can be added as collaborators automatically if you're on a team plan.
+</Callout>
+
+## Project Visibility
+
+| Visibility | Who Can See |
+|------------|-------------|
+| Private | Only you and invited collaborators |
+| Organization | All members of your organization |
+| Public | Anyone (via published Study) |
+
+To share a project publicly, [publish it as a Study](/guides/studies).
+
+## Best Practices
+
+### Organizing by Investigation
+
+Create projects around research questions, not just genes:
+
+**Good:** "DDR1 as Therapeutic Target in RCC"
+**Less Good:** "DDR1 Queries"
+
+### Using Sections
+
+Group cards into logical sections:
+
+- **Background** - Initial expression/mutation checks
+- **Mechanism** - Pathway and correlation analyses
+- **Clinical** - Survival and subtype analyses
+- **Validation** - Cross-dataset confirmation
+
+### Documenting as You Go
+
+Add notes while your reasoning is fresh:
+
+- Why did you run this query?
+- What did you expect vs. find?
+- What follow-up does this suggest?
+
+## Converting to Study
+
+Ready to share your findings? Projects can be published as Studies:
+
+1. Open your project
+2. Click **Publish as Study**
+3. Add title, summary, and key findings
+4. Choose visibility
+5. Share with the community
+
+See [Publishing Studies](/guides/studies) for details.

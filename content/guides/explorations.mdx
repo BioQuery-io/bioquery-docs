@@ -1,0 +1,168 @@
+# Explorations
+
+Run multi-query analysis sessions with context tracking and intelligent suggestions.
+
+## What are Explorations?
+
+Explorations are guided research sessions that:
+
+- Track context across multiple queries
+- Suggest relevant follow-up analyses
+- Remember what you've discovered
+- Can be converted to Projects or Studies
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  Explorations require a free BioQuery account. Sign up at bioquery.io/signup.
+</Callout>
+
+## Starting an Exploration
+
+1. Go to **Explorations** in the navigation
+2. Click **New Exploration**
+3. Ask your first question
+
+BioQuery will automatically track context as you explore.
+
+## The Exploration Interface
+
+### Chat View
+
+Explorations use a chat-like interface:
+
+- **Your queries** appear on the right
+- **Results** appear on the left with summaries
+- **Suggestions** appear below as clickable chips
+
+### Context Panel
+
+At the top, you'll see tracked context:
+
+- **Genes**: Gene symbols mentioned in your queries
+- **Cancers**: Cancer types you're investigating
+- **Current Focus**: What BioQuery thinks you're exploring
+
+This context helps BioQuery understand follow-up questions.
+
+## Context-Aware Queries
+
+### With Context
+
+Once context is established, you can ask abbreviated questions:
+
+**First query:**
+> "Is DDR1 overexpressed in papillary kidney cancer?"
+
+**Follow-up (with context):**
+> "What about survival impact?"
+
+BioQuery understands you mean "Does DDR1 expression affect survival in KIRP?"
+
+### Resetting Context
+
+To start fresh within the same exploration:
+- Say "Looking at a different gene now..." before your query
+- Or start a new exploration
+
+## Suggestions
+
+After each result, BioQuery suggests relevant follow-ups.
+
+### Suggestion Types
+
+| After | Suggestions Include |
+|-------|---------------------|
+| Significant expression result | Survival impact, tumor vs normal, mutation check |
+| Non-significant result | Check subtypes, try other cancers |
+| Survival analysis | Mechanism exploration, therapy prediction |
+| Mutation finding | Expression correlation, pathway analysis |
+
+### Using Suggestions
+
+- **Click** a suggestion to run that query
+- **Dismiss** (X) suggestions you're not interested in
+- **Ignore** - suggestions will update after your next query
+
+<Callout type="info">
+  Suggestions are based on your specific results. Significant findings get different follow-ups than non-significant ones.
+</Callout>
+
+## Example Exploration
+
+Here's a typical exploration session:
+
+1. **Start**: "Is DDR1 higher in papillary vs clear cell kidney cancer?"
+   - Result: Yes, significantly higher (p < 0.001)
+
+2. **Suggestion clicked**: "Does DDR1 expression affect survival in KIRP?"
+   - Result: High DDR1 associated with worse survival (p = 0.023)
+
+3. **Your follow-up**: "Is it also elevated vs normal kidney?"
+   - Result: Yes, 3.2x higher than GTEx normal kidney
+
+4. **Your query**: "Is DDR1 mutated in kidney cancer?"
+   - Result: Low mutation rate (2.3%)
+
+This progression builds a complete picture of DDR1 in kidney cancer.
+
+## Managing Explorations
+
+### Naming
+
+Explorations are auto-named based on context, or you can rename them.
+
+### Finding Past Explorations
+
+Go to **Explorations** to see your history:
+- Sorted by last activity
+- Shows context summary (genes, cancers)
+- Click to continue exploring
+
+### Deleting
+
+You can delete explorations you no longer need from the list view.
+
+## Converting Explorations
+
+### To Project
+
+Save your exploration as a Project to:
+- Organize cards into sections
+- Add hypothesis and notes
+- Collaborate with others
+
+Click **Save as Project** on any exploration.
+
+### To Study
+
+Publish your exploration as a Study to:
+- Share with the community
+- Get feedback from experts
+- Contribute to scientific discovery
+
+Click **Publish Study** on any exploration.
+
+## Best Practices
+
+### Start Broad, Then Narrow
+
+Begin with general questions, then drill down:
+1. Is gene X altered in cancer Y?
+2. Does it affect outcomes?
+3. What's the mechanism?
+
+### Use Suggestions as Guides
+
+Suggestions represent common research patterns. Even if you don't click them, they can inspire your next question.
+
+### Save Important Findings
+
+When you find something interesting:
+- Click "View full result" to see the complete Query Card
+- Save to a Project for organization
+- Add notes while the context is fresh
+
+### Convert Long Sessions
+
+After 5+ queries, consider converting to a Project. This helps organize your findings and makes them easier to revisit.

@@ -118,10 +118,19 @@ Include Query Cards in your research:
 > DDR1 expression was significantly higher in KIRP vs KIRC (p < 0.001, Wilcoxon rank-sum test). Analysis performed using BioQuery (bioquery.io/card/bq-2025-01-15-a7f3x).
 
 **Methods section:**
-Copy the auto-generated methods text directly from your card. It includes:
+Copy the auto-generated methods text directly from your card via the `/methods` endpoint or the "Methods" tab in the UI. It includes:
 - Data source attribution
 - Statistical methodology
 - Software citation
+
+**Auto-generated citations:**
+Get properly formatted citations via the `/cite` endpoint:
+
+```bash
+GET /v1/cards/{card_id}/cite
+```
+
+Returns citations in BibTeX, APA, and MLA formats, plus required data source attributions (TCGA, GTEx, etc.).
 
 ### Exporting
 
@@ -137,9 +146,42 @@ Download your results in multiple formats:
 ### Building On Cards
 
 Query Cards support research workflows:
+
 - **Save to Project**: Organize related cards together
 - **Fork**: Create variations on existing analyses
+- **Rerun**: Verify results with the latest data
 - **Publish as Study**: Share with the community
+
+#### Forking Cards
+
+Fork a card to create variations:
+
+```bash
+# Fork with a different gene
+POST /v1/cards/{card_id}/fork
+{"gene": "DDR2"}
+
+# Exact copy (no re-execution)
+POST /v1/cards/{card_id}/fork
+{"exact_copy": true}
+```
+
+Forked cards link back to their parent, creating a traceable lineage. You can see how many times a card has been forked in its metadata.
+
+#### Rerunning Cards
+
+Verify if results have changed with updated data:
+
+```bash
+POST /v1/cards/{card_id}/rerun
+```
+
+Rerun compares the new results with the original:
+- Sample count changes (new patients added?)
+- P-value changes (significance affected?)
+- Effect size changes (magnitude different?)
+
+This is valuable for longitudinal research where data sources update over time.
 
 ## Design Philosophy
 

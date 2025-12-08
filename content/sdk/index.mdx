@@ -1,0 +1,95 @@
+# Python SDK
+
+The BioQuery Python SDK provides a simple, Pythonic interface for querying cancer genomics data.
+
+## Features
+
+- **Natural Language Queries**: Ask questions in plain English
+- **Interactive Visualizations**: Plotly figures you can customize
+- **Statistical Analysis**: Publication-ready p-values and effect sizes
+- **Multiple Data Sources**: TCGA, TARGET, GTEx, CCLE, CPTAC, GENIE
+- **Export Options**: PNG, SVG, JSON, DataFrame
+
+## Quick Example
+
+```python
+import bioquery
+
+# Initialize client
+client = bioquery.Client(api_key="your-api-key")
+
+# Ask a question in natural language
+card = client.query("Is DDR1 expression higher in KIRP vs KIRC?")
+
+# View the answer
+print(card.answer)
+# "DDR1 expression is significantly higher in KIRP compared to KIRC
+#  (median 8.2 vs 5.1 TPM, p < 0.001, Wilcoxon rank-sum test)."
+
+# Access statistical results
+print(f"P-value: {card.p_value}")
+print(f"Effect size: {card.effect_size}")
+
+# Display interactive figure (in Jupyter)
+card.show_figure()
+
+# Export
+card.save_figure("ddr1_comparison.png")
+df = card.to_dataframe()
+```
+
+## Use Cases
+
+### Research Workflows
+
+Integrate BioQuery into your analysis pipelines:
+
+```python
+genes = ["DDR1", "EGFR", "TP53", "BRCA1"]
+results = []
+
+for gene in genes:
+    card = client.query(f"Is {gene} higher in KIRP vs KIRC?")
+    results.append({
+        "gene": gene,
+        "p_value": card.p_value,
+        "effect_size": card.effect_size,
+    })
+
+df = pd.DataFrame(results)
+```
+
+### Jupyter Notebooks
+
+Perfect for exploratory analysis:
+
+```python
+# Interactive visualization in notebook
+card = client.query("Show DDR1 expression across all TCGA cancers")
+card.show_figure()
+
+# Export for publication
+card.save_figure("figure1.svg", format="svg")
+```
+
+### Automated Reports
+
+Generate reproducible reports:
+
+```python
+card = client.query("Does high EGFR affect survival in lung adenocarcinoma?")
+
+# Get grant-ready methods text
+print(card.methods_text)
+
+# Export full card for archival
+with open("analysis.json", "w") as f:
+    f.write(card.to_json())
+```
+
+## Next Steps
+
+- [Installation](/sdk/installation) - Install the SDK
+- [Client Reference](/sdk/client) - Full client documentation
+- [QueryCard Reference](/sdk/query-card) - Working with results
+- [Examples](/sdk/examples) - More code examples

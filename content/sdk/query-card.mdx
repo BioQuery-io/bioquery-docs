@@ -1,0 +1,209 @@
+# QueryCard Reference
+
+The `QueryCard` class represents a complete analysis result from BioQuery.
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `card_id` | `str` | Unique identifier (e.g., `bq-2025-01-15-abc123`) |
+| `question` | `str` | Original natural language question |
+| `interpretation` | `str` | How BioQuery understood the query |
+| `answer` | `str` | Natural language answer |
+| `figure` | `dict \| None` | Plotly figure JSON |
+| `statistics` | `dict` | Statistical results |
+| `sql_query` | `str \| None` | Executed BigQuery SQL |
+| `methods_text` | `str \| None` | Grant-ready methods text |
+| `data` | `list[dict]` | Underlying data points |
+| `analysis_type` | `str \| None` | Type of analysis performed |
+| `created_at` | `datetime \| None` | Creation timestamp |
+
+## Convenience Properties
+
+### p_value
+
+Get the p-value from statistics:
+
+```python
+card = client.query("Is DDR1 higher in KIRP vs KIRC?")
+print(f"P-value: {card.p_value}")  # 0.00012
+```
+
+### effect_size
+
+Get the effect size from statistics:
+
+```python
+print(f"Effect size: {card.effect_size}")  # 0.45
+```
+
+## Methods
+
+### show_figure()
+
+Display the interactive Plotly figure in a Jupyter notebook.
+
+```python
+card.show_figure()
+```
+
+Raises `ValueError` if no figure is available.
+
+### get_figure()
+
+Get the Plotly figure object for customization.
+
+```python
+fig = card.get_figure()
+fig.update_layout(title="Custom Title")
+fig.show()
+```
+
+Returns a `plotly.graph_objects.Figure`.
+
+### save_figure()
+
+Save the figure to a file.
+
+```python
+card.save_figure(
+    path: str,
+    format: str | None = None,
+    width: int = 1200,
+    height: int = 800,
+    scale: float = 2.0
+)
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `path` | `str` | Output file path |
+| `format` | `str \| None` | Format: `png`, `svg`, `pdf`, `html`. Auto-detected if not specified |
+| `width` | `int` | Image width in pixels |
+| `height` | `int` | Image height in pixels |
+| `scale` | `float` | Scale factor for raster formats |
+
+#### Examples
+
+```python
+# Auto-detect format from extension
+card.save_figure("figure.png")
+card.save_figure("figure.svg")
+
+# High-resolution for publication
+card.save_figure("figure.png", width=2400, height=1600, scale=3.0)
+
+# Interactive HTML
+card.save_figure("figure.html")
+```
+
+### to_dataframe()
+
+Convert the underlying data to a pandas DataFrame.
+
+```python
+df = card.to_dataframe()
+print(df.head())
+```
+
+Returns a `pandas.DataFrame`. Raises `ValueError` if no data is available.
+
+### to_json()
+
+Export the full card as JSON.
+
+```python
+json_str = card.to_json()
+with open("card.json", "w") as f:
+    f.write(json_str)
+```
+
+Returns a JSON string with indentation.
+
+### to_dict()
+
+Export the full card as a dictionary.
+
+```python
+d = card.to_dict()
+print(d["statistics"])
+```
+
+## Example: Complete Workflow
+
+```python
+import bioquery
+import pandas as pd
+
+client = bioquery.Client()
+
+# Submit query
+card = client.query("Compare BRCA1 expression in breast vs ovarian cancer")
+
+# Print summary
+print(f"Question: {card.question}")
+print(f"Answer: {card.answer}")
+print(f"P-value: {card.p_value}")
+
+# Display figure in notebook
+card.show_figure()
+
+# Save for publication
+card.save_figure("brca1_comparison.svg")
+
+# Get data for further analysis
+df = card.to_dataframe()
+print(f"Data points: {len(df)}")
+
+# Save complete card
+with open("analysis.json", "w") as f:
+    f.write(card.to_json())
+
+# Get methods text for grant
+print("\nMethods:")
+print(card.methods_text)
+```
+
+## Statistics Dictionary
+
+The `statistics` property contains analysis-specific results:
+
+### Differential Expression
+
+```python
+{
+    "test": "wilcoxon",
+    "p_value": 0.00012,
+    "effect_size": 0.45,
+    "group1_median": 8.2,
+    "group2_median": 5.1,
+    "group1_n": 150,
+    "group2_n": 200
+}
+```
+
+### Survival Analysis
+
+```python
+{
+    "test": "log_rank",
+    "p_value": 0.023,
+    "hazard_ratio": 1.8,
+    "ci_lower": 1.1,
+    "ci_upper": 2.9,
+    "median_survival_high": 24.5,
+    "median_survival_low": 36.2
+}
+```
+
+### Mutation Frequency
+
+```python
+{
+    "mutation_rate": 0.42,
+    "mutated_samples": 126,
+    "total_samples": 300
+}
+```

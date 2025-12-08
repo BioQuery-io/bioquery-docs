@@ -1,0 +1,84 @@
+# Installation
+
+## Requirements
+
+- Python 3.9 or higher
+- pip or uv package manager
+
+## Install from PyPI
+
+```bash
+pip install bioquery
+```
+
+Or using uv:
+
+```bash
+uv add bioquery
+```
+
+## Configuration
+
+### API Key
+
+Get your API key from [bioquery.io/account](https://bioquery.io/account).
+
+Set it as an environment variable:
+
+```bash
+export BIOQUERY_API_KEY="your-api-key"
+```
+
+Or pass it directly to the client:
+
+```python
+import bioquery
+
+client = bioquery.Client(api_key="your-api-key")
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `BIOQUERY_API_KEY` | Your API key | Required |
+| `BIOQUERY_API_URL` | API base URL | `https://api.bioquery.io` |
+
+## Verify Installation
+
+```python
+import bioquery
+
+# Check version
+print(bioquery.__version__)
+
+# Test connection
+client = bioquery.Client()
+card = client.query("What is the TP53 mutation rate in lung cancer?")
+print(card.answer)
+```
+
+## Dependencies
+
+The SDK automatically installs these dependencies:
+
+- `httpx` - HTTP client
+- `pydantic` - Data validation
+- `pandas` - DataFrame support
+- `plotly` - Visualization
+
+## Development Installation
+
+For contributors:
+
+```bash
+git clone https://github.com/BioQuery-io/bioquery-py.git
+cd bioquery-py
+pip install -e ".[dev]"
+```
+
+Run tests:
+
+```bash
+pytest
+```

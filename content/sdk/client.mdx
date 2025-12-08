@@ -1,0 +1,182 @@
+# Client Reference
+
+The `Client` class is the main interface for interacting with the BioQuery API.
+
+## Constructor
+
+```python
+bioquery.Client(
+    api_key: str | None = None,
+    api_url: str | None = None,
+    timeout: float = 120.0
+)
+```
+
+### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `api_key` | `str \| None` | API key. Falls back to `BIOQUERY_API_KEY` env var |
+| `api_url` | `str \| None` | API base URL. Defaults to `https://api.bioquery.io` |
+| `timeout` | `float` | Request timeout in seconds. Default: 120 |
+
+### Example
+
+```python
+import bioquery
+
+# Using environment variable
+client = bioquery.Client()
+
+# Explicit API key
+client = bioquery.Client(api_key="sk-...")
+
+# Custom settings
+client = bioquery.Client(
+    api_key="sk-...",
+    api_url="http://localhost:8000",
+    timeout=60.0
+)
+```
+
+## Methods
+
+### query()
+
+Submit a natural language query and get results.
+
+```python
+client.query(question: str) -> QueryCard
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `question` | `str` | Natural language question about cancer genomics |
+
+#### Returns
+
+A `QueryCard` object with results, visualization, and statistics.
+
+#### Example
+
+```python
+card = client.query("Is DDR1 expression higher in KIRP vs KIRC?")
+print(card.answer)
+```
+
+### get_card()
+
+Retrieve an existing Query Card by ID.
+
+```python
+client.get_card(card_id: str) -> QueryCard
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `card_id` | `str` | The unique card identifier |
+
+#### Returns
+
+A `QueryCard` object.
+
+#### Example
+
+```python
+card = client.get_card("bq-2025-01-15-abc123")
+print(card.question)
+```
+
+### stream_query()
+
+Submit a query with streaming progress updates.
+
+```python
+client.stream_query(
+    question: str,
+    on_progress: Callable[[dict], None] | None = None
+) -> QueryCard
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `question` | `str` | Natural language question |
+| `on_progress` | `Callable` | Callback for progress updates |
+
+#### Example
+
+```python
+def on_progress(update):
+    print(f"Step: {update['step']}")
+
+card = client.stream_query(
+    "Compare EGFR in LUAD vs LUSC",
+    on_progress=on_progress
+)
+```
+
+### close()
+
+Close the HTTP client connection.
+
+```python
+client.close()
+```
+
+## Context Manager
+
+Use the client as a context manager for automatic cleanup:
+
+```python
+with bioquery.Client() as client:
+    card = client.query("...")
+# Connection automatically closed
+```
+
+## Async Client
+
+For asynchronous applications, use `AsyncClient`:
+
+```python
+import asyncio
+from bioquery import AsyncClient
+
+async def main():
+    async with AsyncClient() as client:
+        card = await client.query("Is DDR1 higher in KIRP vs KIRC?")
+        print(card.answer)
+
+asyncio.run(main())
+```
+
+### Async Methods
+
+- `await client.query(question)` - Submit query
+- `await client.get_card(card_id)` - Get existing card
+- `await client.close()` - Close connection
+
+## Error Handling
+
+```python
+from bioquery.exceptions import (
+    BioQueryError,        # Base exception
+    AuthenticationError,  # Invalid API key
+    QueryError,           # Query processing failed
+    RateLimitError,       # Too many requests
+)
+
+try:
+    card = client.query("...")
+except AuthenticationError:
+    print("Invalid API key")
+except QueryError as e:
+    print(f"Query failed: {e}")
+except RateLimitError:
+    print("Rate limited, please wait")
+```

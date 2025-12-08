@@ -2,6 +2,7 @@
   "index": "Introduction",
   "getting-started": "Getting Started",
   "guides": "Guides",
+  "sdk": "Python SDK",
   "api": "API Reference",
   "examples": "Examples"
 }

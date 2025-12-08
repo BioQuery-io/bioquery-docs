@@ -1,0 +1,196 @@
+# SDK Examples
+
+Practical examples for common use cases.
+
+## Basic Query
+
+```python
+import bioquery
+
+client = bioquery.Client()
+
+# Simple question
+card = client.query("What is the TP53 mutation rate in lung cancer?")
+print(card.answer)
+```
+
+## Differential Expression
+
+Compare gene expression between cancer types:
+
+```python
+card = client.query("Is DDR1 expression higher in KIRP vs KIRC?")
+
+print(f"Answer: {card.answer}")
+print(f"P-value: {card.p_value}")
+print(f"Effect size: {card.effect_size}")
+
+# Show the box plot
+card.show_figure()
+```
+
+## Tumor vs Normal
+
+Compare tumor to normal tissue:
+
+```python
+card = client.query("Is TP53 higher in lung cancer vs normal lung?")
+
+# Get the data for custom analysis
+df = card.to_dataframe()
+print(df.groupby("source")["expression"].describe())
+```
+
+## Survival Analysis
+
+Analyze survival outcomes:
+
+```python
+card = client.query("Does high EGFR expression affect survival in LUAD?")
+
+print(f"Hazard ratio: {card.statistics['hazard_ratio']}")
+print(f"95% CI: [{card.statistics['ci_lower']}, {card.statistics['ci_upper']}]")
+
+# Save Kaplan-Meier curve
+card.save_figure("survival_curve.svg")
+```
+
+## Pan-Cancer Analysis
+
+Analyze a gene across all cancers:
+
+```python
+card = client.query("Show DDR1 expression across all TCGA cancers")
+
+# Get ranked data
+df = card.to_dataframe()
+print(df.groupby("cancer_type")["expression"].median().sort_values(ascending=False))
+```
+
+## Batch Analysis
+
+Analyze multiple genes:
+
+```python
+import pandas as pd
+
+genes = ["DDR1", "EGFR", "TP53", "BRCA1", "KRAS"]
+results = []
+
+for gene in genes:
+    card = client.query(f"Is {gene} higher in KIRP vs KIRC?")
+    results.append({
+        "gene": gene,
+        "p_value": card.p_value,
+        "effect_size": card.effect_size,
+        "significant": card.p_value < 0.05
+    })
+
+df = pd.DataFrame(results)
+print(df.sort_values("p_value"))
+```
+
+## Export for Publication
+
+```python
+card = client.query("Compare BRCA1 in breast cancer subtypes")
+
+# High-resolution figure
+card.save_figure(
+    "figure1.png",
+    width=2400,
+    height=1600,
+    scale=3.0
+)
+
+# Vector format
+card.save_figure("figure1.svg")
+
+# Get methods text
+print("Methods section:")
+print(card.methods_text)
+```
+
+## Cell Line Analysis
+
+Query CCLE data:
+
+```python
+card = client.query("Show BRAF expression across melanoma cell lines")
+card.show_figure()
+
+# Get specific cell lines
+df = card.to_dataframe()
+high_expr = df[df["expression"] > df["expression"].median()]
+print(high_expr["cell_line"].tolist())
+```
+
+## Protein Expression
+
+Query CPTAC proteomics:
+
+```python
+card = client.query("Compare EGFR protein levels in lung cancer vs normal")
+
+print(f"Protein fold change: {card.statistics.get('fold_change', 'N/A')}")
+```
+
+## Async Usage
+
+For web applications or async workflows:
+
+```python
+import asyncio
+from bioquery import AsyncClient
+
+async def analyze_genes(genes):
+    async with AsyncClient() as client:
+        tasks = [client.query(f"Is {g} higher in KIRP vs KIRC?") for g in genes]
+        cards = await asyncio.gather(*tasks)
+        return cards
+
+genes = ["DDR1", "EGFR", "TP53"]
+cards = asyncio.run(analyze_genes(genes))
+
+for card in cards:
+    print(f"{card.question}: p={card.p_value}")
+```
+
+## Error Handling
+
+```python
+from bioquery.exceptions import QueryError, RateLimitError
+import time
+
+def safe_query(client, question, retries=3):
+    for attempt in range(retries):
+        try:
+            return client.query(question)
+        except RateLimitError:
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)  # Exponential backoff
+            else:
+                raise
+        except QueryError as e:
+            print(f"Query failed: {e}")
+            return None
+
+card = safe_query(client, "Is DDR1 higher in KIRP vs KIRC?")
+```
+
+## Saving and Loading Cards
+
+```python
+import json
+
+# Save card to file
+card = client.query("Is DDR1 higher in KIRP vs KIRC?")
+with open("my_analysis.json", "w") as f:
+    f.write(card.to_json())
+
+# Load and recreate (for reference)
+with open("my_analysis.json") as f:
+    data = json.load(f)
+    print(f"Original question: {data['question']}")
+    print(f"Answer: {data['answer']}")
+```

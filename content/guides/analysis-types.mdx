@@ -160,6 +160,98 @@ Do patients with high MYC have worse prognosis in lymphoma?
   Survival data has limitations: follow-up time varies, some patients are censored, and treatment effects are not accounted for.
 </Callout>
 
+## Pan-Cancer Expression
+
+Analyze gene expression across all 33 TCGA cancer types in a single query.
+
+### When to Use
+
+- Understanding a gene's expression landscape across cancers
+- Identifying cancers where a gene is most highly expressed
+- Comparing expression patterns across tissue types
+
+### Example Queries
+
+```
+Show DDR1 expression across all cancers
+Pan-cancer expression of EGFR
+What's TP53 expression in all TCGA cancers?
+```
+
+### Statistical Method
+
+- **Visualization**: Boxplot with all 33 cancer types
+- **Ranking**: Cancer types ordered by median expression
+- **Data**: TCGA RNA-seq (log2 TPM+1)
+
+<Callout type="info">
+  Pan-cancer queries provide a quick overview but may take longer to execute due to the larger data volume.
+</Callout>
+
+## Gene Signature Analysis
+
+Calculate gene signature scores using curated gene sets from MSigDB (33,000+ signatures).
+
+### When to Use
+
+- Assessing pathway activity (e.g., EMT, proliferation, immune signatures)
+- Comparing signature scores between cancer types
+- Correlating signatures with survival outcomes
+
+### Example Queries
+
+```
+Calculate EMT signature score in breast cancer
+Compare immune hot vs cold signatures in melanoma
+Does high MYC_TARGETS_V1 score predict worse survival in lung cancer?
+```
+
+### Available Signatures
+
+BioQuery includes the complete MSigDB collection:
+
+| Collection | Description | Count |
+|------------|-------------|-------|
+| **H (Hallmark)** | 50 well-defined biological states | 50 |
+| **C2:CP** | Canonical pathways (KEGG, Reactome, BioCarta) | 3,000+ |
+| **C5:GO** | Gene Ontology terms | 10,000+ |
+| **C6** | Oncogenic signatures | 189 |
+| **C7** | Immunologic signatures | 5,000+ |
+
+### Statistical Method
+
+- **Score**: Mean z-score of signature genes
+- **Comparison**: Wilcoxon test between groups
+- **Survival**: Log-rank test with median split
+
+<Callout type="info">
+  You can search for signatures by name or function. Try "EMT", "immune", "proliferation", or specific pathway names.
+</Callout>
+
+## Gene Correlation
+
+Analyze the correlation between two genes within a cancer type.
+
+### When to Use
+
+- Identifying co-expressed genes
+- Validating pathway relationships
+- Finding potential co-regulators
+
+### Example Queries
+
+```
+Correlate DDR1 and MYC in breast cancer
+Is EGFR expression correlated with HER2 in lung cancer?
+What's the correlation between TP53 and MDM2?
+```
+
+### Statistical Method
+
+- **Test**: Pearson and Spearman correlation
+- **Visualization**: Scatter plot with regression line
+- **Output**: r value, p-value, 95% CI
+
 ## Choosing the Right Analysis
 
 | Question Type | Analysis | Example |
@@ -168,6 +260,9 @@ Do patients with high MYC have worse prognosis in lymphoma?
 | "Is gene X upregulated in cancer?" | Tumor vs Normal | "Is MYC upregulated in breast cancer?" |
 | "How often is gene X mutated?" | Mutation Frequency | "What's the TP53 mutation rate in GBM?" |
 | "Does gene X predict survival?" | Survival Analysis | "Does high DDR1 predict worse survival?" |
+| "Gene X across all cancers?" | Pan-Cancer Expression | "Show EGFR expression across all cancers" |
+| "Pathway/signature activity?" | Gene Signature | "EMT signature in breast cancer" |
+| "Are genes X and Y correlated?" | Gene Correlation | "Correlate DDR1 and MYC in BRCA" |
 | "Gene X in cell lines?" | Cell Line Expression | "DDR1 in lung cancer cell lines" |
 | "Gene X protein levels?" | Protein Expression | "TP53 protein in glioblastoma" |
 

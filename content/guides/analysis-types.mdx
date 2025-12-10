@@ -259,12 +259,15 @@ What's the correlation between TP53 and MDM2?
 | "Is gene X higher in cancer A vs B?" | Differential Expression | "Is EGFR higher in LUAD vs LUSC?" |
 | "Is gene X upregulated in cancer?" | Tumor vs Normal | "Is MYC upregulated in breast cancer?" |
 | "How often is gene X mutated?" | Mutation Frequency | "What's the TP53 mutation rate in GBM?" |
+| "Is gene X amplified/deleted?" | Copy Number | "Is ERBB2 amplified in breast cancer?" |
 | "Does gene X predict survival?" | Survival Analysis | "Does high DDR1 predict worse survival?" |
 | "Gene X across all cancers?" | Pan-Cancer Expression | "Show EGFR expression across all cancers" |
 | "Pathway/signature activity?" | Gene Signature | "EMT signature in breast cancer" |
 | "Are genes X and Y correlated?" | Gene Correlation | "Correlate DDR1 and MYC in BRCA" |
 | "Gene X in cell lines?" | Cell Line Expression | "DDR1 in lung cancer cell lines" |
 | "Gene X protein levels?" | Protein Expression | "TP53 protein in glioblastoma" |
+| "Clinical characteristics?" | Clinical Data | "Age distribution in TCGA-BRCA" |
+| "Alternative splicing events?" | Splicing Analysis | "TP53 splice junctions in lung cancer" |
 
 ## Cell Line Expression (CCLE)
 
@@ -340,14 +343,126 @@ Does DDR1 mRNA correlate with protein in breast cancer?
   Protein abundance values are log2 ratios relative to a pooled reference, not absolute concentrations.
 </Callout>
 
+## Copy Number Analysis
+
+Analyze gene amplification and deletion patterns across cancer types.
+
+### When to Use
+
+- Identifying copy number alterations (amplifications/deletions)
+- Understanding driver events (ERBB2 amplification, CDKN2A deletion)
+- Correlating copy number with expression changes
+
+### Example Queries
+
+```
+Is ERBB2 amplified in breast cancer?
+What percentage of glioblastoma has EGFR amplification?
+Is CDKN2A deleted in melanoma?
+Copy number status of MYC across all cancers
+```
+
+### Data Details
+
+- **Source**: PanCancer Atlas Filtered_Copy_Number table
+- **Method**: GISTIC-processed copy number calls
+- **Values**: -2 (deep deletion), -1 (shallow deletion), 0 (diploid), 1 (gain), 2 (amplification)
+
+### Visualization
+
+- Bar chart showing frequency of each copy number state per cancer type
+- Summary statistics per cancer type
+
+<Callout type="info">
+  Copy number data uses discrete GISTIC values. A value of 2 indicates high-level amplification, while -2 indicates homozygous deletion.
+</Callout>
+
+## Clinical Data Analysis
+
+Access clinical variables including stage, grade, age, and gender.
+
+### When to Use
+
+- Stratifying analyses by clinical variables
+- Understanding cohort demographics
+- Correlating molecular findings with clinical characteristics
+
+### Example Queries
+
+```
+What is the age distribution in TCGA breast cancer?
+How many patients have stage IV lung cancer?
+Gender distribution in TCGA melanoma
+Clinical characteristics of kidney cancer cohort
+```
+
+### Available Variables
+
+| Variable | Description |
+|----------|-------------|
+| Age at diagnosis | Patient age when diagnosed |
+| Gender | Male/Female |
+| Tumor stage | TNM staging (I-IV) |
+| Tumor grade | Histologic grade (G1-G4) |
+| Vital status | Alive/Deceased |
+| Race/Ethnicity | Self-reported |
+
+### Visualization
+
+- Summary statistics and distributions
+- Cross-tabulation with molecular features
+
+<Callout type="warning">
+  Clinical data availability varies by cancer type and patient. Not all variables are available for all samples.
+</Callout>
+
+## Alternative Splicing Analysis
+
+Analyze splice junction usage across cancer types using Snaptron/recount3 data.
+
+### When to Use
+
+- Investigating cancer-specific splicing events
+- Comparing tumor vs normal splicing patterns
+- Identifying alternative isoform usage
+
+### Example Queries
+
+```
+What splice junctions exist for TP53 in TCGA?
+Compare EGFR splicing between tumor and normal
+Is exon 7 of CEACAM1 skipped in breast cancer?
+Pan-cancer junction usage for BCL2L1
+```
+
+### Data Sources
+
+| Source | Samples | Coverage |
+|--------|---------|----------|
+| TCGA v2 | ~11,000 | 33 cancer types |
+| GTEx v2 | ~19,000 | 54 normal tissues |
+| SRA v3h | ~316,000 | Public RNA-seq studies |
+
+### Metrics
+
+- **Junction reads**: Raw read counts spanning splice junctions
+- **PSI (Percent Spliced-In)**: Inclusion ratio for alternative exons
+- **Differential splicing**: Wilcoxon test comparing junction usage between groups
+
+<Callout type="info">
+  Splicing data comes from the Snaptron API. Some queries may take longer due to the API call.
+</Callout>
+
 ## Combining Analyses
 
 For comprehensive characterization of a gene, consider running multiple query types:
 
 1. **Expression**: Is the gene overexpressed in the cancer?
 2. **Mutations**: Is the gene frequently mutated?
-3. **Survival**: Does expression predict patient outcomes?
-4. **Cell Lines**: Is the gene expressed in relevant cell line models?
-5. **Protein**: Does protein abundance match mRNA expression?
+3. **Copy Number**: Is the gene amplified or deleted?
+4. **Survival**: Does expression predict patient outcomes?
+5. **Cell Lines**: Is the gene expressed in relevant cell line models?
+6. **Protein**: Does protein abundance match mRNA expression?
+7. **Splicing**: Are there cancer-specific isoforms?
 
 This multi-angle approach provides stronger evidence for therapeutic relevance.

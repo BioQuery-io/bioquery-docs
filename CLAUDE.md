@@ -103,11 +103,18 @@ Edit the relevant `_meta.json` - order matches object key order.
 
 ## Deployment
 
-Deployed to Vercel. Auto-deploys on push to `main`.
+Deployed to Google Cloud Run via Cloud Build. Auto-deploys on push to `main`.
 
 ```bash
-# Manual deploy
-vercel --prod
+# Manual deploy via Cloud Build trigger
+gcloud builds triggers run bioquery-docs-deploy \
+  --branch=main \
+  --region=us-central1 \
+  --project=bioquery-frontend
+
+# Or direct deploy
+cd docs/
+gcloud builds submit --config=cloudbuild.yaml --project=bioquery-frontend
 ```
 
 ## Data Sources Reference

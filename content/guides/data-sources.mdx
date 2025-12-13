@@ -1,6 +1,6 @@
 # Data Sources
 
-BioQuery integrates six major cancer genomics databases, all accessible through natural language queries.
+BioQuery integrates eight major cancer genomics databases, all accessible through natural language queries.
 
 import { Callout } from 'nextra/components'
 
@@ -14,8 +14,10 @@ import { Callout } from 'nextra/components'
 | **CCLE** | Cancer cell lines | ~1,000 | Expression, Mutations |
 | **CPTAC** | Proteomics | ~1,500 | Protein abundance |
 | **GENIE** | Real-world clinical | 40,000+ | Clinical data |
+| **iAtlas ICI** | Immunotherapy response | 2,142 | Immune features, Response, Survival |
+| **GDSC** | Drug sensitivity | 978 cell lines | IC50, AUC, Drug response |
 
-All data is accessed via [ISB-CGC BigQuery](https://bq-search.isb-cgc.org/) for fast, reproducible queries.
+All data is accessed via [ISB-CGC BigQuery](https://bq-search.isb-cgc.org/) and BioQuery BigQuery for fast, reproducible queries.
 
 ---
 
@@ -244,6 +246,91 @@ Clinical summary for breast cancer patients
 
 ---
 
+## iAtlas ICI (Immunotherapy Response Data)
+
+Checkpoint inhibitor response data from 23 published clinical studies.
+
+### Overview
+
+- **Studies**: 23 published ICI trials
+- **Samples**: 2,142 patients
+- **ICI Targets**: PD-1, PD-L1, CTLA-4, combinations
+
+### Available Studies (Selected)
+
+| Study | Cancer | ICI Target | Samples |
+|-------|--------|------------|---------|
+| IMVigor210 | Bladder | PD-L1 | 348 |
+| Anders 2022 | Breast | PD-1 | 345 |
+| IMmotion150 | Kidney | PD-L1 | 263 |
+| Liu 2019 | Melanoma | PD-1 | 122 |
+| Gide 2019 | Melanoma | PD-1/CTLA-4 | 91 |
+| PRINCE | Pancreas | PD-1 | 104 |
+
+[Full study list available in documentation]
+
+### Data Types
+
+- **Response status**: Responder/Non-responder classification
+- **Immune features**: TIDE score, MIRACLE score, immune cell fractions
+- **Survival**: Overall survival, progression-free survival
+
+### Example Queries
+
+```
+What predicts immunotherapy response in melanoma?
+How does PD-L1 expression affect ICI response?
+Survival analysis for ICI responders vs non-responders
+```
+
+<Callout type="info">
+  Data sourced from [iAtlas](https://www.cri-iatlas.org/) - the Cancer Research Institute's immunotherapy data portal.
+</Callout>
+
+---
+
+## GDSC (Genomics of Drug Sensitivity in Cancer)
+
+Drug sensitivity data (IC50, AUC) across cancer cell lines.
+
+### Overview
+
+- **Measurements**: 575,000+ drug-cell line combinations
+- **Drugs**: 542 compounds
+- **Cell Lines**: 978 cancer cell lines
+- **Cancer Types**: 32 tissue types
+
+### Data Types
+
+- **IC50**: Half maximal inhibitory concentration (µM)
+- **AUC**: Area under dose-response curve
+- **Drug targets**: Putative gene targets for each drug
+- **Pathway annotations**: Drug mechanism pathways
+
+### Example Queries
+
+```
+How sensitive are cells to Erlotinib?
+What drugs target BRAF and how effective are they?
+What is the IC50 of Imatinib in leukemia cell lines?
+```
+
+### Common Drug Classes
+
+| Class | Example Drugs | Target |
+|-------|---------------|--------|
+| EGFR inhibitors | Erlotinib, Gefitinib | EGFR |
+| BRAF inhibitors | Vemurafenib, Dabrafenib | BRAF |
+| MEK inhibitors | Trametinib, Selumetinib | MEK1/2 |
+| BCR-ABL inhibitors | Imatinib, Dasatinib | BCR-ABL |
+| PI3K inhibitors | Pictilisib, Alpelisib | PIK3CA |
+
+<Callout type="info">
+  Data from [GDSC Release 8.5](https://www.cancerrxgene.org/) (October 2023) - the Genomics of Drug Sensitivity in Cancer project.
+</Callout>
+
+---
+
 ## Data Access
 
 All BioQuery data is accessed via the [ISB-CGC BigQuery](https://bq-search.isb-cgc.org/) public datasets. This ensures:
@@ -276,4 +363,11 @@ isb-cgc-bq.CPTAC.quant_proteome_*
 
 # GENIE
 isb-cgc-bq.GENIE.clinical_gdc_current
+
+# iAtlas ICI (BioQuery BigQuery)
+bioquery-frontend.iatlas_ici.samples
+bioquery-frontend.iatlas_ici.immune_features
+
+# GDSC (BioQuery BigQuery)
+bioquery-frontend.gdsc.drug_response
 ```

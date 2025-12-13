@@ -12,6 +12,8 @@ BioQuery supports multiple types of genomic analyses across six data sources. Le
 | **CCLE** | Cancer Cell Line Encyclopedia - ~1,000 cell lines | Expression, Mutations |
 | **CPTAC** | Clinical Proteomics - 10 cancer types | Protein abundance, Phosphoproteomics |
 | **GENIE** | Real-world clinical - ~40,000 patients | Clinical data |
+| **iAtlas ICI** | Immunotherapy response - 23 studies | Response, Immune features, Survival |
+| **GDSC** | Drug sensitivity - 978 cell lines | IC50, AUC, Drug response |
 
 ## Differential Expression
 
@@ -268,6 +270,9 @@ What's the correlation between TP53 and MDM2?
 | "Gene X protein levels?" | Protein Expression | "TP53 protein in glioblastoma" |
 | "Clinical characteristics?" | Clinical Data | "Age distribution in TCGA-BRCA" |
 | "Alternative splicing events?" | Splicing Analysis | "TP53 splice junctions in lung cancer" |
+| "How sensitive are cells to drug X?" | Drug Sensitivity | "IC50 of Erlotinib in lung cancer cells" |
+| "What drugs target gene X?" | Drug Sensitivity | "Drugs targeting BRAF and their efficacy" |
+| "Immunotherapy response predictors?" | Immunotherapy Response | "What predicts ICI response in melanoma?" |
 
 ## Cell Line Expression (CCLE)
 
@@ -453,6 +458,100 @@ Pan-cancer junction usage for BCL2L1
   Splicing data comes from the Snaptron API. Some queries may take longer due to the API call.
 </Callout>
 
+## Drug Sensitivity Analysis (GDSC)
+
+Analyze how cancer cell lines respond to drugs using IC50 and AUC data from the Genomics of Drug Sensitivity in Cancer project.
+
+### When to Use
+
+- Identifying effective drugs for a cancer type
+- Finding drugs targeting a specific gene
+- Understanding drug response patterns across cell lines
+- Pre-clinical drug screening prioritization
+
+### Example Queries
+
+```
+How sensitive are cancer cells to Erlotinib?
+What drugs target BRAF and how effective are they?
+What is the IC50 of Imatinib in leukemia cell lines?
+Which cancer types are most sensitive to Vemurafenib?
+```
+
+### Data Details
+
+- **Measurements**: 575,000+ drug-cell line combinations
+- **Drugs**: 542 compounds
+- **Cell Lines**: 978 cancer cell lines
+- **Cancer Types**: 32 tissue types
+- **Source**: GDSC Release 8.5 (October 2023)
+
+### Metrics
+
+| Metric | Description |
+|--------|-------------|
+| **IC50** | Drug concentration for 50% growth inhibition (µM) |
+| **AUC** | Area under dose-response curve (lower = more sensitive) |
+| **Sensitivity rate** | % of cell lines with AUC < 0.7 |
+
+### Visualization
+
+- Bar chart of median IC50 by cancer type
+- Drug comparison chart for gene targets
+- Most sensitive cell lines for a drug
+
+<Callout type="info">
+  Lower IC50 values indicate higher drug sensitivity. A drug with IC50 < 1 µM is generally considered potent.
+</Callout>
+
+## Immunotherapy Response Analysis (iAtlas)
+
+Analyze immunotherapy response data from 23 published checkpoint inhibitor clinical trials.
+
+### When to Use
+
+- Understanding immunotherapy response patterns
+- Identifying predictive biomarkers for ICI response
+- Comparing immune features between responders and non-responders
+- Survival analysis in immunotherapy cohorts
+
+### Example Queries
+
+```
+What predicts immunotherapy response in melanoma?
+How does PD-L1 expression affect ICI response?
+Survival analysis for ICI responders vs non-responders in bladder cancer
+Compare TIDE scores between responders and non-responders
+```
+
+### Data Details
+
+- **Studies**: 23 published ICI clinical trials
+- **Samples**: 2,142 patients
+- **ICI Targets**: PD-1, PD-L1, CTLA-4, combinations
+- **Cancer Types**: Bladder, Breast, Kidney, Melanoma, Lung, Pancreas, and more
+- **Source**: iAtlas (Cancer Research Institute)
+
+### Immune Features Available
+
+| Feature | Description |
+|---------|-------------|
+| **TIDE Score** | Tumor Immune Dysfunction and Exclusion |
+| **MIRACLE Score** | Multi-omics Immunotherapy Response And Clinical Efficacy |
+| **Immune cell fractions** | T cells, B cells, NK cells, Macrophages, etc. |
+| **Response status** | Responder / Non-responder classification |
+| **Survival** | Overall survival, progression-free survival |
+
+### Metrics
+
+- **Response rate**: % of patients with objective response
+- **Survival**: Kaplan-Meier analysis by response status
+- **Feature comparison**: Wilcoxon test between groups
+
+<Callout type="info">
+  Response definitions vary by study. Most use RECIST criteria (CR = complete response, PR = partial response, SD = stable disease, PD = progressive disease).
+</Callout>
+
 ## Combining Analyses
 
 For comprehensive characterization of a gene, consider running multiple query types:
@@ -464,5 +563,7 @@ For comprehensive characterization of a gene, consider running multiple query ty
 5. **Cell Lines**: Is the gene expressed in relevant cell line models?
 6. **Protein**: Does protein abundance match mRNA expression?
 7. **Splicing**: Are there cancer-specific isoforms?
+8. **Drug Sensitivity**: Are there drugs targeting this gene? How effective?
+9. **Immunotherapy**: Does the gene predict immunotherapy response?
 
 This multi-angle approach provides stronger evidence for therapeutic relevance.

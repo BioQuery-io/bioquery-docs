@@ -2,6 +2,32 @@
 
 Nextra documentation site for BioQuery - https://docs.bioquery.io
 
+## ⚠️ PUBLIC REPOSITORY WARNING
+
+**This repository is PUBLIC and deployed to https://docs.bioquery.io**
+
+### DO NOT commit:
+- API keys, secrets, credentials
+- Internal architecture details (routing logic, prompt templates)
+- Business strategy, revenue data, pricing logic
+- Competitive analysis or moat strategies
+- Unpublished research or proprietary algorithms
+- Customer data or private usage analytics
+- Internal roadmaps or unannounced features
+
+### What SHOULD be documented here:
+- Public API reference and schemas
+- User guides and tutorials
+- Example queries and use cases
+- Data source descriptions (public datasets)
+- Query Card format specification
+- SDK installation and usage
+- General troubleshooting
+
+### For internal documentation, use:
+- **Wiki**: `https://github.com/BioQuery-io/.github-private/wiki` (member-only)
+- **Root docs/**: `bioquery-project/docs/` for session summaries and planning (not public)
+
 ## Quick Start
 
 ```bash
